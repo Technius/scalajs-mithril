@@ -8,6 +8,8 @@ import scala.scalajs.js.annotation.JSName
 object Mithril extends Mithril {
   def prop[A](): MithrilProp[A] = js.native
   def prop[A](value: A): MithrilProp[A] = js.native
+
+  val route: MithrilRoute = js.native
 }
 
 trait Mithril extends js.Object {

@@ -5,10 +5,11 @@ This is an experimental library that provides facades for [Mithril](https://lhor
 ## TODO
 * `m.request`
 * `m.trust`
-* Routing
+* Routing syntax sugars and type safety
 * Other rendering functions
 * Publish snapshots to Maven Central
 * Fix issues/limitations (see relevant section below)
+* ScalaDoc
 
 ## Usage
 
