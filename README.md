@@ -10,7 +10,7 @@ This is an experimental library that provides facades for [Mithril](https://lhor
 * Fix issues/limitations (see relevant section below)
 * ScalaDoc
 
-## Usage
+## Example
 
 ```scala
 import co.technius.scalajs.mithril._
@@ -18,13 +18,10 @@ import co.technius.scalajs.mithril._
 import org.scalajs.dom
 import scala.scalajs.js
 
-// Just define your component...
-object MyComponent {
+object MyComponent extends Component {
 
-  // Use js.Undefined if you don't need a controller
   def controller() = new MyController
 
-  // See the known issues/limitations
   def view(ctrl: Controller) = js.Array(
     m("span", s"Hi, ${ctrl.name()}!"),
     m("input[type=text]", js.Dynamic.literal(
@@ -40,7 +37,6 @@ object MyComponent {
 
 object MyApp extends js.JSApp {
   def main(): Unit = {
-    // ...and then attach it to the DOM
     m.mount(dom.document.getElementById("app"), MyComponent)
   }
 }
@@ -59,6 +55,45 @@ object MyApp extends js.JSApp {
     <script>MyApp().main();</script>
   </body>
 </html>
+```
+
+## The Basics
+
+First, you'll need to define your component. In Mithril, a controller is
+optional. For a component without a controller, create an object that
+subclasses `ViewComponent` and implement the `view` method.
+
+```scala
+@ScalaJSDefined
+object MyComponent extends ViewComponent {
+  def view() = js.Array(
+    m("p", "Hello world!")
+    m("p", "How fantastic!")
+  )
+}
+```
+
+A component with a controller is a bit more complicated. You'll need to create
+an object that subclasses `Component`, define the `Controller` type, and
+implement both the `view` and `controller` methods.
+
+```scala
+@ScalaJSDefined
+class MyComponent extends Component {
+  type Controller = MyController
+  def controller() = new MyController
+  def view(ctrl: Controller) = js.Array(
+    m("span", s"Hey there, ${ctrl.name()}!"),
+    m("input[type=text]", js.Dynamic.literal(
+      oninput = m.withAttr("value", ctrl.name),
+      value = ctrl.name()
+    ))
+  )
+
+  class MyController {
+    val name = m.prop("Name")
+  }
+}
 ```
 
 ## Known Issues/Limitations
