@@ -1,6 +1,7 @@
 package co.technius.scalajs.mithril
 
 import scala.scalajs.js
+import scala.scalajs.js.|
 
 @js.native
 trait VirtualDom extends js.Object {
@@ -12,7 +13,7 @@ trait VirtualDom extends js.Object {
 class VirtualDomChild[T]
 object VirtualDomChild {
   implicit object DomString extends VirtualDomChild[String]
-  implicit object DomSeq extends VirtualDomChild[js.Array[VirtualDomChild[_]]]
-  implicit object DomChild extends VirtualDomChild[VirtualDomChild[_]]
-  implicit object DomComponent extends VirtualDomChild[ViewComponent]
+  implicit object DomSeq extends VirtualDomChild[js.Array[VirtualDom]]
+  implicit object DomChild extends VirtualDomChild[VirtualDom]
+  implicit object DomComponent extends VirtualDomChild[ViewComponent | Component]
 }
