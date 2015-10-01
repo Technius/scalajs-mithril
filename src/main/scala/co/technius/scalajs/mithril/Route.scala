@@ -2,6 +2,7 @@ package co.technius.scalajs.mithril
 
 import org.scalajs.dom
 import scala.scalajs.js
+import scala.scalajs.js.|
 
 @js.native
 trait MithrilRoute extends js.Object {
@@ -16,7 +17,7 @@ trait MithrilRoute extends js.Object {
   def apply(route: String, params: js.Array[js.Any], shouldReplaceHistory: Boolean): Unit = js.native
 
   // Initialize
-  def apply(rootElement: dom.raw.Element, defaultRoute: String, routes: js.Object): Unit = js.native
+  def apply(rootElement: dom.raw.Element, defaultRoute: String, routes: js.Dictionary[ViewComponent | Component]): Unit = js.native
 
   var mode: String = js.native
 
@@ -29,9 +30,8 @@ trait MithrilRoute extends js.Object {
 
 object MithrilRoute {
   @inline implicit class RichMithrilRoute(val route: MithrilRoute) extends AnyVal {
-    // TODO: Fix this
-    @inline def apply(rootElement: dom.raw.Element, defaultRoute: String)(routes: (String, Component)*): Unit = {
-      route(rootElement, defaultRoute, js.Dictionary(routes: _*).asInstanceOf[js.Object])
+    @inline def apply(rootElement: dom.raw.Element, defaultRoute: String)(routes: (String, ViewComponent | Component)*): Unit = {
+      route(rootElement, defaultRoute, js.Dictionary(routes: _*))
     }
   }
 }
