@@ -3,6 +3,7 @@ package co.technius.scalajs.mithril
 import org.scalajs.dom
 import scala.scalajs.js
 
+@js.native
 trait MithrilRoute extends js.Object {
 
   // Get route

@@ -1,18 +1,20 @@
 package co.technius.scalajs.mithril
 
 import scala.scalajs.js
+import scala.scalajs.js.|
 import scala.scalajs.js.annotation._
 
 @JSExportDescendentObjects
-trait ViewComponent {
-  @JSExport def view(): js.Object
+@ScalaJSDefined
+trait ViewComponent extends js.Object {
+  def view(): VirtualDom | js.Array[VirtualDom]
 }
 
-trait Component extends ViewComponent {
+@JSExportDescendentObjects
+@ScalaJSDefined
+trait Component extends js.Object {
   type Controller
-  @JSExport def controller(): Controller
-  @JSExport def view(ctrl: Controller): js.Object
-
-  override def view(): js.Object = throw new IllegalArgumentException()
+  def controller(): Controller
+  def view(ctrl: Controller): VirtualDom | js.Array[VirtualDom]
 }
 
