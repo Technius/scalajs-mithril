@@ -9,11 +9,3 @@ trait VirtualDom extends js.Object {
   val attrs: js.Object = js.native
   val children: js.Array[VirtualDom] = js.native
 }
-
-class VirtualDomChild[T]
-object VirtualDomChild {
-  implicit object DomString extends VirtualDomChild[String]
-  implicit object DomSeq extends VirtualDomChild[js.Array[VirtualDom]]
-  implicit object DomChild extends VirtualDomChild[VirtualDom]
-  implicit object DomComponent extends VirtualDomChild[ViewComponent | Component]
-}
