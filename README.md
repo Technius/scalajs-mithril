@@ -3,7 +3,7 @@
 This is an experimental library that provides facades for [Mithril](https://lhorie.github.io/mithril/index.html).
 
 ## TODO
-* `m.request`
+* Complete `m.request` implementation
 * `m.trust`
 * Other rendering functions
 * Publish snapshots to Maven Central
