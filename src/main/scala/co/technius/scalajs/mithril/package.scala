@@ -9,4 +9,6 @@ package object mithril {
   implicit def xhrOpts[T](options: XHROptions[T]): XHROptionsT[T] = {
     js.use(options).as[XHROptionsT[T]]
   }
+
+  type RichPromise[T] = Promise.RichPromise[T]
 }

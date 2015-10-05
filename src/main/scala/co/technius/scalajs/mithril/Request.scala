@@ -1,13 +1,28 @@
 package co.technius.scalajs.mithril
 
 import org.scalajs.dom.XMLHttpRequest
+import scala.concurrent.Future
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{ JSExportAll, ScalaJSDefined }
 
 @js.native
 trait Promise[T] extends js.Object with MithrilProp[T] {
   def `then`[R](successCallback: js.Function1[T, R]): Promise[R] = js.native
-  def `then`[R](successCallback: js.Function1[T, R], errorCallback: js.UndefOr[js.Function] = js.undefined): Promise[R] = js.native
+  def `then`[R](successCallback: js.Function1[T, R], errorCallback: js.Function): Promise[R] = js.native
+}
+
+object Promise {
+  implicit class RichPromise[T](val wrap: Promise[T]) extends AnyVal {
+    def map[R](f: T => R): Promise[R] = wrap.`then`(f)
+    def foreach(f: T => Unit): Unit = wrap.`then`(f)
+    def onSuccess[U](f: PartialFunction[T, U]): Unit = wrap.`then`(f)
+    def onFailure[E, U](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
+    def recover[E, U >: T](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
+    def value: Option[T] = {
+      val v = wrap()
+      if (v == js.undefined) None else Some(v)
+    }
+  }
 }
 
 @js.native
