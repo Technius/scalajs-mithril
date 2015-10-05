@@ -6,7 +6,7 @@ import scala.scalajs.js.|
 import scala.scalajs.js.annotation.JSName
 
 @js.native @JSName("m")
-object Mithril extends Mithril {
+object Mithril extends MithrilCore with MithrilRendering {
   def prop[A](): MithrilProp[A] = js.native
   def prop[A](value: A): MithrilProp[A] = js.native
 
@@ -16,7 +16,7 @@ object Mithril extends Mithril {
 }
 
 @js.native
-trait Mithril extends js.Object {
+trait MithrilCore extends js.Object {
   private[this] type Child = String | js.Array[VirtualDom] | VirtualDom
   def apply(): VirtualDom = js.native
   def apply(selector: String): VirtualDom = js.native
@@ -30,6 +30,14 @@ trait Mithril extends js.Object {
   def withAttr(attr: String, callback: MithrilProp[_]): js.Function = js.native
 
   def component(component: ViewComponent | Component, args: js.Any*): VirtualDom = js.native
+}
+
+@js.native
+trait MithrilRendering extends js.Object {
+  def redraw(): Unit = js.native
+  def redraw(forceSync: Boolean): Unit = js.native
+  def startComputation(): Unit = js.native
+  def endComputation(): Unit = js.native
 }
 
 @js.native

@@ -5,7 +5,7 @@ This is an experimental library that provides facades for [Mithril](https://lhor
 ## TODO
 * Complete `m.request` implementation
 * `m.trust`
-* Other rendering functions
+* `m.render`
 * Publish snapshots to Maven Central
 * Fix issues/limitations (see relevant section below)
 * ScalaDoc
