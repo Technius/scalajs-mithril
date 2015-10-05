@@ -5,11 +5,9 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.{ JSExportAll, ScalaJSDefined }
 
 @js.native
-trait Promise[T] extends js.Object {
+trait Promise[T] extends js.Object with MithrilProp[T] {
   def `then`[R](successCallback: js.Function1[T, R]): Promise[R] = js.native
   def `then`[R](successCallback: js.Function1[T, R], errorCallback: js.UndefOr[js.Function] = js.undefined): Promise[R] = js.native
-
-  def apply(): T = js.native
 }
 
 @js.native
