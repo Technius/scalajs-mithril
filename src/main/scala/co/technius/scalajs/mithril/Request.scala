@@ -27,16 +27,16 @@ object Promise {
   implicit class RichPromise[T](val wrap: Promise[T]) extends AnyVal {
     @inline def map[R](f: T => R): Promise[R] = wrap.`then`(f)
     @inline def foreach(f: T => Unit): Unit = wrap.`then`(f)
-    @inline def onSuccess[U](f: PartialFunction[T, U]): Unit = wrap.`then`(f)
-    @inline def onFailure[E, U](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
-    @inline def recover[E, U >: T](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
+    @inline def onSuccess(f: PartialFunction[T, Unit]): Unit = wrap.`then`(f)
+    @inline def onFailure[E](f: PartialFunction[E, Unit]): Unit = wrap.`then`(null, f)
+    @inline def recover[U >: T](f: PartialFunction[Any, U]): Promise[U] = wrap.`then`(null, f)
 
     def value: Option[T] = {
       val v = wrap()
       if (v == js.undefined) None else Some(v)
     }
 
-    def flatMap[R](f: T => Promise[R]): Promise[R] = {
+    @inline def flatMap[R](f: T => Promise[R]): Promise[R] = {
       val d = m.deferred[R]()
       wrap foreach { a =>
         f(a) foreach { b =>
