@@ -10,7 +10,7 @@ object Mithril extends MithrilCore with MithrilRendering {
   def prop[A](): MithrilProp[A] = js.native
   def prop[A](value: A): MithrilProp[A] = js.native
 
-  def request[T](options: XHROptionsT[T]): Promise[T] = js.native
+  def request[T](options: XHROptions[T]): Promise[T] = js.native
 
   val route: MithrilRoute = js.native
 }
