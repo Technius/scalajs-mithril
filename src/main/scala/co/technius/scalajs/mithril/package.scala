@@ -10,5 +10,8 @@ package object mithril {
     js.use(options).as[XHROptionsT[T]]
   }
 
+  implicit def component2Mithril(c: Component): MithrilComponent =
+    js.use(c).as[MithrilComponent]
+
   type RichPromise[T] = Promise.RichPromise[T]
 }

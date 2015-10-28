@@ -3,10 +3,12 @@
 This is an experimental library that provides facades for [Mithril](https://lhorie.github.io/mithril/index.html).
 
 ## TODO
+
+* Use macros to type-check view and controller methods
 * Complete `m.request` implementation
 * `m.trust`
 * `m.render`
-* Publish snapshots to Maven Central
+* Publish snapshots to Bintray or Maven Central
 * Fix issues/limitations (see relevant section below)
 * ScalaDoc
 
@@ -20,9 +22,9 @@ import scala.scalajs.js
 
 object MyComponent extends Component {
 
-  def controller() = new MyController
+  override def controller = () => new MyController
 
-  def view(ctrl: Controller) = js.Array(
+  def view = (ctrl: Controller) => js.Array(
     m("span", s"Hi, ${ctrl.name()}!"),
     m("input[type=text]", js.Dynamic.literal(
       oninput = m.withAttr("value", ctrl.name),
@@ -59,30 +61,27 @@ object MyApp extends js.JSApp {
 
 ## The Basics
 
-First, you'll need to define your component. In Mithril, a controller is
-optional. For a component without a controller, create an object that
-subclasses `ViewComponent` and implement the `view` method.
+First, you'll need to define your component. To do this, create an object,
+subclass `Component`, and implement the view method. Note how the method
+declaration has no parentheses.
 
 ```scala
-@ScalaJSDefined
 object MyComponent extends ViewComponent {
-  def view() = js.Array(
+  def view = () => js.Array(
     m("p", "Hello world!")
     m("p", "How fantastic!")
   )
 }
 ```
 
-A component with a controller is a bit more complicated. You'll need to create
-an object that subclasses `Component`, define the `Controller` type, and
-implement both the `view` and `controller` methods.
+In Mithril, a controller is optional. If you want to use a controller, create a
+class for your controller, override the `controller` method, and add the controller
+as an argument to your view function.
 
 ```scala
-@ScalaJSDefined
 class MyComponent extends Component {
-  type Controller = MyController
-  def controller() = new MyController
-  def view(ctrl: Controller) = js.Array(
+  def controller = () => new MyController
+  def view = (ctrl: Controller) => js.Array(
     m("span", s"Hey there, ${ctrl.name()}!"),
     m("input[type=text]", js.Dynamic.literal(
       oninput = m.withAttr("value", ctrl.name),
@@ -96,8 +95,28 @@ class MyComponent extends Component {
 }
 ```
 
+The signatures of `view` and `controller` are shown below.
+
+```scala
+```
+
+Lastly, call `m.mount` with your controller:
+
+```scala
+import co.technius.scalajs.mithril._
+import org.scalajs.dom
+import scala.scalajs.js
+
+object MyApp extends js.JSApp {
+  def main(): Unit = {
+    m.mount(dom.document.getElementById("app"), MyComponent)
+  }
+}
+```
+
 ## Known Issues/Limitations
 
+* Type safety isn't that good for components right now.
 * Using `Seq` for the `children` argument in `m(selector, children)` functions doesn't work. Instead, use `js.Array`.
 * `m(selector, children)` functions don't accept varargs yet. Instead, use `js.Array`.
 

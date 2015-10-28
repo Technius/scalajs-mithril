@@ -24,12 +24,12 @@ trait MithrilCore extends js.Object {
   def apply(selector: String, children: Child): VirtualDom = js.native
   def apply(selector: String, attributes: js.Object, children: Child): VirtualDom = js.native
 
-  def mount(rootElement: dom.raw.Element, component: ViewComponent | Component): js.Object = js.native
+  def mount(rootElement: dom.raw.Element, component: MithrilComponent): js.Object = js.native
 
   def withAttr(attr: String, callback: js.Function): js.Function = js.native
   def withAttr(attr: String, callback: MithrilProp[_]): js.Function = js.native
 
-  def component(component: ViewComponent | Component, args: js.Any*): VirtualDom = js.native
+  def component(component: MithrilComponent, args: js.Any*): VirtualDom = js.native
 }
 
 @js.native

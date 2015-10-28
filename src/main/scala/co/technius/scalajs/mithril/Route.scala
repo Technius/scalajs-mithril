@@ -17,7 +17,7 @@ trait MithrilRoute extends js.Object {
   def apply(route: String, params: js.Array[js.Any], shouldReplaceHistory: Boolean): Unit = js.native
 
   // Initialize
-  def apply(rootElement: dom.raw.Element, defaultRoute: String, routes: js.Dictionary[ViewComponent | Component]): Unit = js.native
+  def apply(rootElement: dom.raw.Element, defaultRoute: String, routes: js.Dictionary[MithrilComponent]): Unit = js.native
 
   var mode: String = js.native
 
@@ -30,7 +30,7 @@ trait MithrilRoute extends js.Object {
 
 object MithrilRoute {
   @inline implicit class RichMithrilRoute(val route: MithrilRoute) extends AnyVal {
-    @inline def apply(rootElement: dom.raw.Element, defaultRoute: String)(routes: (String, ViewComponent | Component)*): Unit = {
+    @inline def apply(rootElement: dom.raw.Element, defaultRoute: String)(routes: (String, MithrilComponent)*): Unit = {
       route(rootElement, defaultRoute, js.Dictionary(routes: _*))
     }
   }
