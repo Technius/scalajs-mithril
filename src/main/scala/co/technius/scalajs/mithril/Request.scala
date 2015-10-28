@@ -6,6 +6,18 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.{ JSExportAll, ScalaJSDefined }
 
 @js.native
+trait Deferred[T] extends js.Object {
+
+  var onerror: js.Function = js.native
+
+  val promise: Promise[T] = js.native
+
+  def resolve(value: T): Unit = js.native
+
+  def reject(value: Any): Unit = js.native
+}
+
+@js.native
 trait Promise[T] extends js.Object with MithrilProp[T] {
   def `then`[R](successCallback: js.Function1[T, R]): Promise[R] = js.native
   def `then`[R](successCallback: js.Function1[T, R], errorCallback: js.Function): Promise[R] = js.native
@@ -13,14 +25,25 @@ trait Promise[T] extends js.Object with MithrilProp[T] {
 
 object Promise {
   implicit class RichPromise[T](val wrap: Promise[T]) extends AnyVal {
-    def map[R](f: T => R): Promise[R] = wrap.`then`(f)
-    def foreach(f: T => Unit): Unit = wrap.`then`(f)
-    def onSuccess[U](f: PartialFunction[T, U]): Unit = wrap.`then`(f)
-    def onFailure[E, U](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
-    def recover[E, U >: T](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
+    @inline def map[R](f: T => R): Promise[R] = wrap.`then`(f)
+    @inline def foreach(f: T => Unit): Unit = wrap.`then`(f)
+    @inline def onSuccess[U](f: PartialFunction[T, U]): Unit = wrap.`then`(f)
+    @inline def onFailure[E, U](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
+    @inline def recover[E, U >: T](f: PartialFunction[E, U]): Unit = wrap.`then`(null, f)
+
     def value: Option[T] = {
       val v = wrap()
       if (v == js.undefined) None else Some(v)
+    }
+
+    def flatMap[R](f: T => Promise[R]): Promise[R] = {
+      val d = m.deferred[R]()
+      wrap foreach { a =>
+        f(a) foreach { b =>
+          d.resolve(b)
+        }
+      }
+      d.promise
     }
   }
 }
