@@ -22,9 +22,9 @@ import scala.scalajs.js
 
 object MyComponent extends Component {
 
-  override def controller = () => new MyController
+  override val controller: js.Function = () => new Controller
 
-  def view = (ctrl: Controller) => js.Array(
+  val view: js.Function = (ctrl: Controller) => js.Array(
     m("span", s"Hi, ${ctrl.name()}!"),
     m("input[type=text]", js.Dynamic.literal(
       oninput = m.withAttr("value", ctrl.name),
@@ -32,7 +32,7 @@ object MyComponent extends Component {
     )
   )
 
-  class MyController {
+  class Controller {
     val name = m.prop("Name")
   }
 }
@@ -62,12 +62,11 @@ object MyApp extends js.JSApp {
 ## The Basics
 
 First, you'll need to define your component. To do this, create an object,
-subclass `Component`, and implement the view method. Note how the method
-declaration has no parentheses.
+subclass `Component` and implement the view functon.
 
 ```scala
-object MyComponent extends ViewComponent {
-  def view = () => js.Array(
+object MyComponent extends Component {
+  val view: js.Function = () => js.Array(
     m("p", "Hello world!")
     m("p", "How fantastic!")
   )
@@ -75,13 +74,13 @@ object MyComponent extends ViewComponent {
 ```
 
 In Mithril, a controller is optional. If you want to use a controller, create a
-class for your controller, override the `controller` method, and add the controller
-as an argument to your view function.
+class for your controller, override the `controller` function, and add the
+controller as an argument to your view function.
 
 ```scala
 class MyComponent extends Component {
-  def controller = () => new MyController
-  def view = (ctrl: Controller) => js.Array(
+  override val controller: js.Function = () => new MyController
+  val view: js.Function = (ctrl: Controller) => js.Array(
     m("span", s"Hey there, ${ctrl.name()}!"),
     m("input[type=text]", js.Dynamic.literal(
       oninput = m.withAttr("value", ctrl.name),
@@ -93,11 +92,6 @@ class MyComponent extends Component {
     val name = m.prop("Name")
   }
 }
-```
-
-The signatures of `view` and `controller` are shown below.
-
-```scala
 ```
 
 Lastly, call `m.mount` with your controller:

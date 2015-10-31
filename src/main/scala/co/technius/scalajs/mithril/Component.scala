@@ -7,12 +7,13 @@ import scala.annotation.meta.field
 
 @js.native
 trait MithrilComponent extends js.Object {
-  def controller: js.Function
-  def view: js.Function
+  val controller: js.Function
+  val view: js.Function
 }
 
 @JSExportDescendentObjects
+@JSExportAll
 trait Component {
-  @JSExport def controller: js.Function = () => Unit
-  @JSExport def view: js.Function
+  val controller: js.Function = () => Unit
+  val view: js.Function
 }
