@@ -28,7 +28,7 @@ object MyComponent extends Component {
     m("span", s"Hi, ${ctrl.name()}!"),
     m("input[type=text]", js.Dynamic.literal(
       oninput = m.withAttr("value", ctrl.name),
-      value = ctrl.name()
+      value = ctrl.name())
     )
   )
 
