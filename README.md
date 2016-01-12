@@ -29,7 +29,7 @@ object MyComponent extends Component {
     m("input[type=text]", js.Dynamic.literal(
       oninput = m.withAttr("value", ctrl.name),
       value = ctrl.name()
-    )
+    ))
   )
 
   class Controller {
@@ -62,7 +62,7 @@ object MyApp extends js.JSApp {
 ## The Basics
 
 First, you'll need to define your component. To do this, create an object,
-subclass `Component` and implement the view functon.
+subclass `Component` and implement the view function.
 
 ```scala
 object MyComponent extends Component {
