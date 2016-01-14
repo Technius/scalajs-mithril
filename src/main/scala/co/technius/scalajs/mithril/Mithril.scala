@@ -30,6 +30,7 @@ trait MithrilCore extends js.Object {
   def withAttr(attr: String, callback: js.Function): js.Function = js.native
   def withAttr(attr: String, callback: MithrilProp[_]): js.Function = js.native
 
+  def apply(component: MithrilComponent, args: js.Any*): VirtualDom = js.native
   def component(component: MithrilComponent, args: js.Any*): VirtualDom = js.native
 }
 
