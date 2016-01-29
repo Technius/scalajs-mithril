@@ -1,26 +1,39 @@
-name := """scalajs-mithril"""
-
-organization := "co.technius"
-
-version := "0.1.0-SNAPSHOT"
-
-scalaVersion := "2.11.7"
-
-// Change this to another test framework if you prefer
-libraryDependencies ++= Seq(
-  "org.scala-js" %%% "scalajs-dom" % "0.8.0",
-  "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+lazy val sharedSettings = Seq(
+  version := "0.1.0-SNAPSHOT",
+  organization := "co.technius",
+  scalaVersion := "2.11.7",
+  scalacOptions ++= Seq(
+    "-feature",
+    "-deprecation",
+    "-Xlint",
+    "-Xfatal-warnings"
+  )
 )
 
-scalacOptions ++= Seq(
-  "-feature",
-  "-deprecation",
-  "-Xlint",
-  "-Xfatal-warnings"
-)
+lazy val root = (project in file(".")).aggregate(core, examples)
 
-enablePlugins(ScalaJSPlugin)
+lazy val core =
+  Project("core", file("core"))
+    .settings(sharedSettings: _*)
+    .settings(Publish.settings: _*)
+    .settings(
+      name := """scalajs-mithril""",
+      libraryDependencies ++= Seq(
+        "org.scala-js" %%% "scalajs-dom" % "0.8.0",
+        "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+      )
+    )
+    .enablePlugins(ScalaJSPlugin)
 
-// Uncomment to use Akka
-//libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.11"
-
+lazy val examples =
+  Project("examples", file("examples"))
+    .settings(sharedSettings: _*)
+    .settings(
+      name := """scalajs-mithril-examples""",
+      libraryDependencies ++= Seq(
+        "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+      ),
+      jsDependencies += "org.webjars" % "mithril" % "0.2.0" / "mithril.js"
+    )
+    .enablePlugins(ScalaJSPlugin)
+    .dependsOn(core)

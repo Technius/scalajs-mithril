@@ -59,6 +59,9 @@ object MyApp extends js.JSApp {
 </html>
 ```
 
+See the [examples folder](https://github.com/Technius/scalajs-mithril/tree/master/examples/src/main/scala)
+for more examples.
+
 ## The Basics
 
 First, you'll need to define your component. To do this, create an object,
