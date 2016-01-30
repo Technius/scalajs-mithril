@@ -41,9 +41,3 @@ trait MithrilRendering extends js.Object {
   def startComputation(): Unit = js.native
   def endComputation(): Unit = js.native
 }
-
-@js.native
-trait MithrilProp[A] extends js.Object {
-  def apply(): A = js.native
-  def apply(value: A): A = js.native
-}

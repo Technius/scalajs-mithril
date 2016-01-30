@@ -31,11 +31,6 @@ object Promise {
     @inline def onFailure[E](f: PartialFunction[E, Unit]): Unit = wrap.`then`(null, f)
     @inline def recover[U >: T](f: PartialFunction[Any, U]): Promise[U] = wrap.`then`(null, f)
 
-    def value: Option[T] = {
-      val v = wrap()
-      if (v == js.undefined) None else Some(v)
-    }
-
     @inline def flatMap[R](f: T => Promise[R]): Promise[R] = {
       val d = m.deferred[R]()
       wrap foreach { a =>

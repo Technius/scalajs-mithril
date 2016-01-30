@@ -30,8 +30,8 @@ object CounterComponent extends Component {
   private[this] class CounterCtrl {
     val count: MithrilProp[Int] = m.prop(0)
 
-    val increment = () => count(count() + 1)
-    val decrement = () => count(math.max(0, count() - 1))
-    val reset = () => count(0)
+    val increment = () => count() = _ + 1
+    val decrement = () => count() = math.max(0, count() - 1)
+    val reset = () => count() = 0
   }
 }

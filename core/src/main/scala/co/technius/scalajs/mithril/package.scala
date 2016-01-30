@@ -10,4 +10,5 @@ package object mithril {
     js.use(c).as[MithrilComponent]
 
   type RichPromise[T] = Promise.RichPromise[T]
+  type RichMithrilProp[T] = MithrilProp.RichMithrilProp[T]
 }
