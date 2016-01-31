@@ -4,12 +4,6 @@ import org.scalajs.dom
 
 import co.technius.scalajs.mithril._
 
-object Counter extends js.JSApp {
-  def main(): Unit = {
-    m.mount(dom.document.getElementById("app"), CounterComponent)
-  }
-}
-
 object CounterComponent extends Component {
 
   override val controller: js.Function = () => new CounterCtrl
@@ -17,7 +11,7 @@ object CounterComponent extends Component {
   @inline def btn(callback: js.Function, label: String) =
     m("button", json("onclick" -> callback), label)
 
-  val view: js.Function = (ctrl: CounterCtrl) => js.Array[VirtualDom](
+  val view: js.Function = (ctrl: CounterCtrl) => m("div", js.Array[VirtualDom](
     m("p", js.Array(
       m("span", "Count: "),
       ctrl.count()
@@ -25,7 +19,7 @@ object CounterComponent extends Component {
     btn(ctrl.increment, "Increment"),
     btn(ctrl.decrement, "Decrement"),
     btn(ctrl.reset, "Reset")
-  )
+  ))
 
   private[this] class CounterCtrl {
     val count: MithrilProp[Int] = m.prop(0)
