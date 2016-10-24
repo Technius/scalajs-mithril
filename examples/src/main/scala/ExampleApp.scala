@@ -1,5 +1,4 @@
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{ literal => json }
 import scala.scalajs.js.JSConverters._
 import org.scalajs.dom
 
@@ -15,7 +14,8 @@ object ShowcaseComponent extends Component {
 
   val choices = Map[String, MithrilComponent](
     "None" -> null,
-    "Counter" -> CounterComponent
+    "Counter" -> CounterComponent,
+    "Data Fetch" -> DataFetchComponent
   )
 
   override val controller: js.Function = () => new ShowcaseCtrl
