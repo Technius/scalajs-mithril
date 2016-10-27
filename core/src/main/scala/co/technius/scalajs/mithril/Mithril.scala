@@ -18,7 +18,7 @@ object Mithril extends MithrilCore with MithrilRendering {
 
 @js.native
 trait MithrilCore extends js.Object {
-  private[this] type Child = String | js.Array[VirtualDom] | VirtualDom
+  import VirtualDom.Child
   def apply(): VirtualDom = js.native
   def apply(selector: String): VirtualDom = js.native
   def apply(selector: String, attributes: js.Object): VirtualDom = js.native
@@ -36,6 +36,9 @@ trait MithrilCore extends js.Object {
 
 @js.native
 trait MithrilRendering extends js.Object {
+  def render(rootElement: dom.raw.Element, children: VirtualDom.Child,
+             forceRecreation: Boolean = ???): Unit = js.native
+
   def redraw(): Unit = js.native
   def redraw(forceSync: Boolean): Unit = js.native
   def startComputation(): Unit = js.native

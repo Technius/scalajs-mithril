@@ -7,7 +7,6 @@ This is an experimental library that provides facades for [Mithril](https://lhor
 * Use macros to type-check view and controller methods
 * Complete `m.request` implementation
 * `m.trust`
-* `m.render`
 * Publish snapshots to Bintray or Maven Central
 * Fix issues/limitations (see relevant section below)
 * ScalaDoc
