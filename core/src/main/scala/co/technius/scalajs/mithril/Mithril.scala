@@ -41,8 +41,3 @@ trait MithrilRendering extends js.Object {
   def startComputation(): Unit = js.native
   def endComputation(): Unit = js.native
 }
-
-@js.native
-trait MithrilHtml extends js.Object {
-  def trust(html: String): String = js.native
-}
