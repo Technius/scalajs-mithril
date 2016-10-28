@@ -2,14 +2,12 @@
 
 This is an experimental library that provides facades for [Mithril](https://lhorie.github.io/mithril/index.html).
 
-## TODO
-
-* Use macros to type-check view and controller methods
-* Complete `m.request` implementation
-* `m.trust`
-* Publish snapshots to Bintray or Maven Central
-* Fix issues/limitations (see relevant section below)
-* ScalaDoc
+## Setup
+Add the following lines to `build.sbt`:
+```scala
+resolvers += Resolver.sonatypeRepo("snapshots")
+libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
+```
 
 ## Example
 
@@ -110,11 +108,63 @@ object MyApp extends js.JSApp {
 }
 ```
 
+## Making Web Requests
+
+First, create an `XHROptions[T]`, where `T` is the data to be returned:
+
+```scala
+val opts = XHROptions[js.Object](method = "GET", url = "/path/to/request")
+```
+
+It's possible to use most of the optional arguments:
+```scala
+val opts =
+  XHROptions[js.Object](
+    method = "POST",
+    url = "/path/to/request",
+    data = js.Dynamic.literal("foo" -> 1, "bar" -> 2),
+    background = true)
+```
+
+Then, pass the options to `m.request`, which will return a `Promise[T]`:
+```scala
+m.request(opts).foreach { data =>
+  println(data)
+}
+```
+
+`T` is restricted to subtypes of `js.Any`, so Scala types can't be readily used
+with `m.request`. Of course, then response type could be parsed manually, but it
+may be more convenient to define a facade to hold the response data:
+
+```scala
+// Based on examples/src/main/resources/sample-data.json
+@js.native
+trait MyData extends js.Object {
+  val key: String
+  val some_number: Int
+}
+
+val opts = XHROptions[MyData](method = "GET", url = "/path/to/request")
+
+m.request(opts).foreach { data =>
+  println(data.key)
+  println(data.some_number)
+}
+```
+
 ## Known Issues/Limitations
 
 * Type safety isn't that good for components right now.
 * Using `Seq` for the `children` argument in `m(selector, children)` functions doesn't work. Instead, use `js.Array`.
 * `m(selector, children)` functions don't accept varargs yet. Instead, use `js.Array`.
+
+## TODO
+
+* Update to the experimental 1.0 version of mithril.js
+* Fix issues/limitations (see relevant section above)
+* ScalaDoc
+* (In the far future) ScalaTags support
 
 ## License
 This library is licensed under the MIT License. See LICENSE for more details.
