@@ -5,8 +5,13 @@ This is an experimental library that provides facades for [Mithril](https://lhor
 ## Setup
 Add the following lines to `build.sbt`:
 ```scala
+libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.1.0"
+```
+
+To use a snapshot version:
+```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
-libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.1.0-SNAPSHOT"
+libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
 ```
 
 ## Example

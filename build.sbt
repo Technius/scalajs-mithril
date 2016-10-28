@@ -1,5 +1,5 @@
 lazy val sharedSettings = Seq(
-  version := "0.1.0-SNAPSHOT",
+  version := "0.1.0",
   organization := "co.technius",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq(
