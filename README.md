@@ -6,7 +6,7 @@ This is an experimental library that provides facades for [Mithril](https://lhor
 Add the following lines to `build.sbt`:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
-libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
+libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.1.0-SNAPSHOT"
 ```
 
 ## Example
@@ -113,13 +113,13 @@ object MyApp extends js.JSApp {
 First, create an `XHROptions[T]`, where `T` is the data to be returned:
 
 ```scala
-val opts = XHROptions[js.Object](method = "GET", url = "/path/to/request")
+val opts = new XHROptions[js.Object](method = "GET", url = "/path/to/request")
 ```
 
 It's possible to use most of the optional arguments:
 ```scala
 val opts =
-  XHROptions[js.Object](
+  new XHROptions[js.Object](
     method = "POST",
     url = "/path/to/request",
     data = js.Dynamic.literal("foo" -> 1, "bar" -> 2),
@@ -145,7 +145,7 @@ trait MyData extends js.Object {
   val some_number: Int
 }
 
-val opts = XHROptions[MyData](method = "GET", url = "/path/to/request")
+val opts = new XHROptions[MyData](method = "GET", url = "/path/to/request")
 
 m.request(opts).foreach { data =>
   println(data.key)

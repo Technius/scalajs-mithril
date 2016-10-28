@@ -20,7 +20,7 @@ object DataFetchComponent extends Component {
 
   def loadData(ctrl: Controller): Unit = {
     val url = "../../../src/main/resources/sample-data.json"
-    val opts = XHROptions[js.Object](method = "GET", url = url)
+    val opts = new XHROptions[js.Object](method = "GET", url = url)
 
     m.request(opts).foreach { data =>
       ctrl.data() = data
