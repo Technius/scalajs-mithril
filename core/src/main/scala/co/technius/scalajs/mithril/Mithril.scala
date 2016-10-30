@@ -3,9 +3,10 @@ package co.technius.scalajs.mithril
 import org.scalajs.dom
 import scala.scalajs.js
 import scala.scalajs.js.|
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSImport
 
-@js.native @JSName("m")
+@JSImport("mithril", JSImport.Namespace)
+@js.native
 object Mithril extends MithrilCore with MithrilRendering with MithrilHtml {
   def prop[A](): MithrilProp[A] = js.native
   def prop[A](value: A): MithrilProp[A] = js.native

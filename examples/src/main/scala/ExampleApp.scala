@@ -1,12 +1,14 @@
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
+import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
 
 import co.technius.scalajs.mithril._
 
 object ExampleApp extends js.JSApp {
   def main(): Unit = {
-    m.mount(dom.document.getElementById("app"), ShowcaseComponent)
+    dom.console.log(m("div"))
+    // m.mount(dom.document.getElementById("app"), ShowcaseComponent)
   }
 }
 
