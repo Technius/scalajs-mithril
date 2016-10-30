@@ -1,31 +1,43 @@
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{ literal => json }
+import scala.scalajs.js.annotation.ScalaJSDefined
 import org.scalajs.dom
 
 import co.technius.scalajs.mithril._
 
+@ScalaJSDefined
 object CounterComponent extends Component {
 
-  override val controller: js.Function = () => new CounterCtrl
+  type RootNode = GenericVNode[CounterState, _]
 
-  @inline def btn(callback: js.Function, label: String) =
-    m("button", json("onclick" -> callback), label)
+  def oninit(vnode: RootNode) = {
+    vnode.state = new CounterState
+  }
 
-  val view: js.Function = (ctrl: CounterCtrl) => m("div", js.Array[VirtualDom](
-    m("p", js.Array(
-      m("span", "Count: "),
-      ctrl.count()
-    )),
-    btn(ctrl.increment, "Increment"),
-    btn(ctrl.decrement, "Decrement"),
-    btn(ctrl.reset, "Reset")
-  ))
+  def view(vnode: RootNode) = {
+    import vnode.state
+    import helpers._
+    m("div", js.Array[VNode](
+      m("p", js.Array(
+        m("span", "Count: "),
+        state.count()
+      )),
+      btn(state.increment, "Increment"),
+      btn(state.decrement, "Decrement"),
+      btn(state.reset, "Reset")
+    ))
+  }
 
-  private[this] class CounterCtrl {
+  protected class CounterState {
     val count: MithrilProp[Int] = m.prop(0)
 
     val increment = () => count() = _ + 1
     val decrement = () => count() = math.max(0, count() - 1)
     val reset = () => count() = 0
+  }
+
+  object helpers {
+    def btn(callback: js.Function, label: String) =
+      m("button", json("onclick" -> callback), label)
   }
 }

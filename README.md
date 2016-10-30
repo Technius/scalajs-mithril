@@ -2,13 +2,15 @@
 
 This is an experimental library that provides facades for [Mithril](https://lhorie.github.io/mithril/index.html).
 
-## Setup
-For mithril 0.2.5, add the following lines to `build.sbt`:
-```scala
-libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.1.0"
-```
+You are currently viewing the `0.2.0` branch for the experimental `1.0.0` version
+of mithril. The stable `0.1.0` version of scalajs-mithril for mithril `0.2.5`
+can be found [here](/tree/v0.1.0).
 
-For mithril 1.0, only a snapshot is available:
+Mithril 1.0.0 is significantly different from 0.2.0, which is why this rewrite
+is required.
+
+## Setup
+Add the following lines to `build.sbt`:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
 libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"

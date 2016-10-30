@@ -19,25 +19,24 @@ object Mithril extends MithrilCore with MithrilRendering with MithrilHtml {
 
 @js.native
 trait MithrilCore extends js.Object {
-  import VirtualDom.Child
-  def apply(): VirtualDom = js.native
-  def apply(selector: String): VirtualDom = js.native
-  def apply(selector: String, attributes: js.Object): VirtualDom = js.native
-  def apply(selector: String, children: Child): VirtualDom = js.native
-  def apply(selector: String, attributes: js.Object, children: Child): VirtualDom = js.native
+  import VNode.Child
+  def apply(): VNode = js.native
+  def apply(selector: String): VNode = js.native
+  def apply(selector: String, attributes: js.Object): VNode = js.native
+  def apply(selector: String, children: Child): VNode = js.native
+  def apply(selector: String, attributes: js.Object, children: Child): VNode = js.native
 
-  def mount(rootElement: dom.raw.Element, component: MithrilComponent): js.Object = js.native
+  def mount(rootElement: dom.raw.Element, component: Component): js.Object = js.native
 
   def withAttr(attr: String, callback: js.Function): js.Function = js.native
   def withAttr(attr: String, callback: MithrilProp[_]): js.Function = js.native
 
-  def apply(component: MithrilComponent, args: js.Any*): VirtualDom = js.native
-  def component(component: MithrilComponent, args: js.Any*): VirtualDom = js.native
+  def apply(component: Component, args: js.Any*): VNode = js.native
 }
 
 @js.native
 trait MithrilRendering extends js.Object {
-  def render(rootElement: dom.raw.Element, children: VirtualDom.Child,
+  def render(rootElement: dom.raw.Element, children: VNode.Child,
              forceRecreation: Boolean = ???): Unit = js.native
 
   def redraw(): Unit = js.native
