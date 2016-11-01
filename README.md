@@ -19,6 +19,10 @@ Then, add the following lines to `build.sbt`:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
 libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
+enablePlugins(ScalaJSBundlerPlugin)
+
+// Change mithril version to any version supported by this library
+npmDependencies in Compile += "mithril" -> "lhorie/mithril.js#rewrite"
 ```
 
 Build your project with `fastOptJS::webpack`.

@@ -33,8 +33,7 @@ lazy val examples =
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.0"
       ),
-      scalaJSModuleKind := ModuleKind.CommonJSModule,
       npmDependencies in Compile += "mithril" -> "lhorie/mithril.js#rewrite"
     )
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
