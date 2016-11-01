@@ -10,33 +10,48 @@ Mithril 1.0.0 is significantly different from 0.2.0, which is why this rewrite
 is required.
 
 ## Setup
-Add the following lines to `build.sbt`:
+Add `scalajs-bundler` to `project/plugins.sbt`:
+```scala
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.1")
+```
+
+Then, add the following lines to `build.sbt`:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
 libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
 ```
 
+Build your project with `fastOptJS::webpack`.
+
 ## Example
 
 ```scala
 import co.technius.scalajs.mithril._
-
-import org.scalajs.dom
 import scala.scalajs.js
+import scala.scalajs.js.annotation.ScalaJSDefined
+import org.scalajs.dom
 
+@ScalaJSDefined
 object MyComponent extends Component {
 
-  override val controller: js.Function = () => new Controller
+  type RootNode = GenericVNode[State, _]
 
-  val view: js.Function = (ctrl: Controller) => js.Array(
-    m("span", s"Hi, ${ctrl.name()}!"),
-    m("input[type=text]", js.Dynamic.literal(
-      oninput = m.withAttr("value", ctrl.name),
-      value = ctrl.name()
+  def oninit(vnode: RootNode) = {
+    vnode.state = new State
+  }
+
+  def view(vnode: RootNode): VNode = {
+    import vnode.state
+    m("div", js.Array[VNode](
+      m("span", s"Hi, ${state.name()}!"),
+      m("input[type=text]", js.Dynamic.literal(
+        oninput = m.withAttr("value", state.name),
+        value = state.name()
+      ))
     ))
-  )
+  }
 
-  class Controller {
+  protected class State {
     val name = m.prop("Name")
   }
 }
@@ -56,15 +71,13 @@ object MyApp extends js.JSApp {
   </head>
   <body>
     <div id="app"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mithril/0.2.0/mithril.js"></script>
-    <script src="scalajs-mithril-fastopt.js"></script>
-    <script>MyApp().main();</script>
+    <script src="example-fastopt-bundle.js"></script>
   </body>
 </html>
 ```
 
 See the [examples folder](https://github.com/Technius/scalajs-mithril/tree/master/examples/src/main/scala)
-for more examples.
+for complete examples.
 
 ## The Basics
 
@@ -168,7 +181,9 @@ m.request(opts).foreach { data =>
 
 ## TODO
 
-* Update to the experimental 1.0 version of mithril.js
+* Define facades for mithril streams
+* Rewrite route facade
+* Improve documentation
 * Fix issues/limitations (see relevant section above)
 * ScalaDoc
 * (In the far future) ScalaTags support

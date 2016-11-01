@@ -7,29 +7,6 @@ import co.technius.scalajs.mithril._
 
 object ExampleApp extends js.JSApp {
   def main(): Unit = {
-    dom.console.log(m("div"))
-    val comp = new Component {
-      type RootNode = GenericVNode[State, _]
-      def oninit(node: RootNode) = {
-        node.state = new State
-      }
-      def view(node: RootNode) = {
-        val state = node.state
-        m("div", js.Array[VNode](
-          m("h1", "Foo"),
-          m("p", "bar"),
-          m("p", s"Count: ${state.count}"),
-          m("button", js.Dynamic.literal("onclick" -> state.inc), "Increase")
-        ))
-      }
-      class State {
-        var count: Int = 0
-        val inc: js.Function = { () =>
-          count = count + 1
-        }
-      }
-    }
-    // m.mount(dom.document.getElementById("app"), comp)
     m.mount(dom.document.getElementById("app"), ShowcaseComponent)
   }
 }
@@ -79,6 +56,7 @@ object ShowcaseComponent extends Component {
 
     val choices = Map[String, Component](
       "None" -> null,
+      "Hello" -> HelloComponent,
       "Counter" -> CounterComponent,
       "Data Fetch" -> DataFetchComponent
     )
