@@ -1,15 +1,45 @@
 package co.technius.scalajs.mithril
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSName
 
 @js.native
-trait MithrilProp[T] extends js.Object {
-  def apply(): T = js.native
-  def apply(value: T): T = js.native
+trait MithrilProp extends js.Object {
+
+  def apply[T](): MStream[T] = js.native
+
+  def apply[T](value: T): MStream[T] = js.native
+
+  def reject[T](value: js.Any): MStream[T] = js.native
+
+  def merge[T](streams: js.Array[MStream[_]]): MStream[T] = js.native
+
+  def HALT: js.Any = js.native
 }
 
-object MithrilProp {
-  implicit class RichMithrilProp[T](val wrap: MithrilProp[T]) extends AnyVal {
+@js.native
+trait MStream[T] extends js.Object {
+
+  def run[U](callback: js.Function1[T, U]): MStream[U] = js.native
+
+  def apply(): T = js.native
+  def apply(value: T): T = js.native
+
+  def end: MStream[Boolean] = js.native
+
+  def error: MStream[Any] = js.native
+
+  def `catch`[U](callback: js.Function1[Any, U]): MStream[U] = js.native
+
+  @JSName("fantasy-land/map")
+  def map[U](f: js.Function1[T, U]): MStream[U] = js.native
+
+  @JSName("fantasy-land/ap")
+  def ap[U](f: MStream[js.Function1[T, U]]): MStream[U] = js.native
+}
+
+object MStream {
+  implicit class RichMStream[T](val wrap: MStream[T]) extends AnyVal {
 
     /**
      * Syntax sugar for [[MithrilProp!.apply(value* MithrilProp.apply(value)]]

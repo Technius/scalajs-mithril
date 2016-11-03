@@ -34,9 +34,12 @@ object DataFetchComponent extends Component {
       val url = "../../../src/main/resources/sample-data.json"
       val opts = new XHROptions[js.Object](method = "GET", url = url)
   
-      m.request(opts).foreach { data =>
+      val req = m.request(opts)
+      req.run { (data: js.Object) =>
         state.data() = data
+        data
       }
+
     }
   }
 }

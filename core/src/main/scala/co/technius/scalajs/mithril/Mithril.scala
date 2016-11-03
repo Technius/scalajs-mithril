@@ -8,11 +8,10 @@ import scala.scalajs.js.annotation.JSImport
 @JSImport("mithril", JSImport.Namespace)
 @js.native
 object Mithril extends MithrilCore with MithrilRendering with MithrilHtml {
-  def prop[A](): MithrilProp[A] = js.native
-  def prop[A](value: A): MithrilProp[A] = js.native
 
-  def deferred[T](): Deferred[T] = js.native
-  def request[T](options: XHROptions[T]): Promise[T] = js.native
+  def request[T](options: XHROptions[T]): MStream[T] = js.native
+
+  val prop: MithrilProp = js.native
 
   val route: MithrilRoute = js.native
 }
@@ -29,7 +28,7 @@ trait MithrilCore extends js.Object {
   def mount(rootElement: dom.raw.Element, component: Component): js.Object = js.native
 
   def withAttr(attr: String, callback: js.Function): js.Function = js.native
-  def withAttr(attr: String, callback: MithrilProp[_]): js.Function = js.native
+  def withAttr(attr: String, callback: MStream[_]): js.Function = js.native
 
   def apply(component: Component, args: js.Any*): VNode = js.native
 }

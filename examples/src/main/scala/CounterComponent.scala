@@ -29,7 +29,7 @@ object CounterComponent extends Component {
   }
 
   protected class CounterState {
-    val count: MithrilProp[Int] = m.prop(0)
+    val count: MStream[Int] = m.prop(0)
 
     val increment = () => count() = _ + 1
     val decrement = () => count() = math.max(0, count() - 1)
