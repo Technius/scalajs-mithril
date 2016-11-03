@@ -35,7 +35,7 @@ object DataFetchComponent extends Component {
       val opts = new XHROptions[js.Object](method = "GET", url = url)
   
       val req = m.request(opts)
-      req.run { (data: js.Object) =>
+      req.run { data =>
         state.data() = data
         data
       }

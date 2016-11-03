@@ -20,7 +20,15 @@ trait MithrilProp extends js.Object {
 @js.native
 trait MStream[T] extends js.Object {
 
-  def run[U](callback: js.Function1[T, U]): MStream[U] = js.native
+  /**
+   * Called `run` on the mithril stream using the specified JavaScript function.
+   * If using a `T => U`, use [[MStream$.RichMithrilProp#run]] instead, which has
+   * support for type inference for `T => U`
+   *
+   * According to sjrd, type inference should work properly in 2.12.
+   */
+  @JSName("run")
+  def runJS[U](callback: js.Function1[T, U]): MStream[U] = js.native
 
   def apply(): T = js.native
   def apply(value: T): T = js.native
@@ -42,7 +50,7 @@ object MStream {
   implicit class RichMStream[T](val wrap: MStream[T]) extends AnyVal {
 
     /**
-     * Syntax sugar for [[MithrilProp!.apply(value* MithrilProp.apply(value)]]
+     * Syntax sugar for [[MStream!.apply(value* MStream.apply(value)]]
      * @example {{{
      * val count = m.prop(0)
      * count() = 1
@@ -71,5 +79,10 @@ object MStream {
       val v = wrap()
       if (v == js.undefined) None else Some(v)
     }
+
+    /**
+     * Workaround for type inference for [[MStream!.runJS]]
+     */
+    def run[U](f: T => U): MStream[U] = wrap.run(f: js.Function1[T, U])
   }
 }
