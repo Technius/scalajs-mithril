@@ -1,7 +1,9 @@
+crossScalaVersions in ThisBuild := Seq("2.12.0", "2.11.8")
+scalaVersion in ThisBuild := crossScalaVersions.value.head
+
 lazy val sharedSettings = Seq(
   version := "0.2.0-SNAPSHOT",
   organization := "co.technius",
-  scalaVersion := "2.11.8",
   scalacOptions ++= Seq(
     "-feature",
     "-deprecation",
@@ -19,8 +21,8 @@ lazy val core =
     .settings(
       name := """scalajs-mithril""",
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.0",
-        "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+        "org.scala-js" %%% "scalajs-dom" % "0.9.1",
+        "org.scalatest" %% "scalatest" % "3.0.0" % "test"
       )
     )
     .enablePlugins(ScalaJSPlugin)
@@ -31,7 +33,7 @@ lazy val examples =
     .settings(
       name := """scalajs-mithril-examples""",
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.0"
+        "org.scala-js" %%% "scalajs-dom" % "0.9.1"
       ),
       npmDependencies in Compile += "mithril" -> "lhorie/mithril.js#rewrite"
     )
