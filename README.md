@@ -186,7 +186,6 @@ m.request(opts).foreach { data =>
 ## TODO
 
 * Finish facades for mithril streams
-* Type inference for stream methods
 * Rewrite route facade
 * Improve documentation
 * Fix issues/limitations (see relevant section above)
