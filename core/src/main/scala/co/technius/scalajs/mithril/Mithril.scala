@@ -31,6 +31,8 @@ trait MithrilCore extends js.Object {
   def withAttr(attr: String, callback: MStream[_]): js.Function = js.native
 
   def apply(component: Component, args: js.Any*): VNode = js.native
+
+  def fragment(attrs: js.Object, children: js.Array[VNode]): VNode = js.native
 }
 
 @js.native

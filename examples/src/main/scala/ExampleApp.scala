@@ -45,9 +45,9 @@ object ShowcaseComponent extends Component {
       "onchange" -> selectHandler
     ), choiceList.toJSArray)
 
-    m("div", js.Array[VNode](
+    m.fragment(js.Dynamic.literal(), js.Array[VNode](
       choiceBox,
-      m("div", displaying)
+      displaying
     ))
   }
 
