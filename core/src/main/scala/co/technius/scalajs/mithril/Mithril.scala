@@ -14,6 +14,10 @@ object Mithril extends MithrilCore with MithrilRendering with MithrilHtml {
   val prop: MithrilProp = js.native
 
   val route: MithrilRoute = js.native
+
+  def buildQueryString(`object`: js.Object): String = js.native
+
+  def parseQueryString(string: String): js.Object = js.native
 }
 
 @js.native

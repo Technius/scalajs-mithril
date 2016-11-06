@@ -3,34 +3,41 @@ package co.technius.scalajs.mithril
 import org.scalajs.dom
 import scala.scalajs.js
 import scala.scalajs.js.|
+import scala.scalajs.js.annotation.ScalaJSDefined
 
 @js.native
 trait MithrilRoute extends js.Object {
+  import MithrilRoute.Route
 
-  // Get route
-  def apply(): String = js.native
+  def get(): String = js.native
 
-  // Redirect
-  def apply(route: String): Unit = js.native
-  def apply(route: String, shouldReplaceHistory: Boolean): Unit = js.native
-  def apply(route: String, params: js.Any*): Unit = js.native
-  def apply(route: String, params: js.Array[js.Any], shouldReplaceHistory: Boolean): Unit = js.native
+  def set(path: String, data: js.Object, options: js.Object): Unit = js.native
 
-  // Initialize
-  def apply(rootElement: dom.raw.Element, defaultRoute: String, routes: js.Dictionary[Component]): Unit = js.native
+  def link(vnode: VNode): js.Function1[dom.Event, Unit] = js.native
+
+  def apply(root: dom.Element, defaultRoute: String, routes: js.Dictionary[Route]): Unit = js.native
+
+  def prefix(prefix: String): Unit = js.native
 
   var mode: String = js.native
+}
 
-  def param(key: String): String = js.native
+/**
+ * A RouteResolver, as defined in mithril. At least one of the two methods must
+ * be defined.
+ */
+@ScalaJSDefined
+abstract class RouteResolver extends js.Object {
+  def onmatch(resolve: js.Function1[Component, Unit], args: js.Object,
+      requestPath: String): Unit = ()
 
-  def buildQueryString(data: js.Object): String = js.native
-
-  def parseQueryString(querystring: String): js.Object = js.native
+  def render(vnode: VNode): VNode = vnode
 }
 
 object MithrilRoute {
+  type Route = Component | RouteResolver
   @inline implicit class RichMithrilRoute(val route: MithrilRoute) extends AnyVal {
-    @inline def apply(rootElement: dom.raw.Element, defaultRoute: String)(routes: (String, Component)*): Unit = {
+    @inline def apply(rootElement: dom.raw.Element, defaultRoute: String)(routes: (String, Route)*): Unit = {
       route(rootElement, defaultRoute, js.Dictionary(routes: _*))
     }
   }
