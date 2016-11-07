@@ -7,6 +7,8 @@ lazy val sharedSettings = Seq(
   scalacOptions ++= Seq(
     "-feature",
     "-deprecation",
+    "-unchecked",
+    "-Yno-adapted-args",
     "-Xlint",
     "-Xfatal-warnings"
   )
