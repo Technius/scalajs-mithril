@@ -10,9 +10,11 @@ trait MithrilProp extends js.Object {
 
   def apply[T](value: T): MStream[T] = js.native
 
-  def reject[T](value: js.Any): MStream[T] = js.native
+  def combine[T](combiner: js.Function, streams: js.Array[MStream[_]]): MStream[T] = js.native
 
-  def merge[T](streams: js.Array[MStream[_]]): MStream[T] = js.native
+  def reject[T](value: Any): MStream[T] = js.native
+
+  def merge(streams: js.Array[MStream[Any]]): MStream[js.Array[Any]] = js.native
 
   def HALT: js.Any = js.native
 }

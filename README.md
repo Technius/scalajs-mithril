@@ -185,11 +185,11 @@ m.request(opts).foreach { data =>
 
 ## TODO
 
-* Finish facades for mithril streams
+* Improve `combine` and `merge` type signatures in MStream
 * Improve documentation
 * Fix issues/limitations (see relevant section above)
 * ScalaDoc
-* (In the far future) ScalaTags support
+* (In the not-so-far future) ScalaTags support
 
 ## License
 This library is licensed under the MIT License. See LICENSE for more details.
