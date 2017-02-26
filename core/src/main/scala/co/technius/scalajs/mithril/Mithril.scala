@@ -45,5 +45,5 @@ trait MithrilHyperscript extends js.Object {
   def apply(selector: String, children: Child): VNode = js.native
   def apply(selector: String, attributes: js.Object, children: Child): VNode = js.native
 
-  def apply(component: Component, attrs: js.Object): VNode = js.native
+  def apply(component: Component, attrs: js.Object = ???): VNode = js.native
 }
