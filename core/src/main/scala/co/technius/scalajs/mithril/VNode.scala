@@ -20,30 +20,62 @@ sealed trait VNode extends GenericVNode[js.Object, js.Object]
 object VNode {
 
   @js.native
-  trait ElementNode extends VNode {
+  trait Element extends VNode {
     type TagType = String
   }
 
-  @js.native
-  trait FragmentNode extends VNode {
-    type TagType = String
-    val domSize: Int = js.native
+  object Element {
+    def unapply(vnode: VNode): Option[Element] =
+      if (vnode.tag.isInstanceOf[String] && vnode.tag != Fragment.tag &&
+          vnode.tag != Trusted.tag && vnode.tag != Text.tag)
+        Some(vnode.asInstanceOf[Element])
+      else
+        None
   }
 
   @js.native
-  trait TextNode extends VNode {
-    type TagType = String
-  }
-
-  @js.native
-  trait TrustedNode extends VNode {
+  trait Fragment extends VNode {
     type TagType = String
     val domSize: Int = js.native
+    override val tag = Fragment.tag
+  }
+
+  object Fragment {
+    val tag = "["
+    def unapply(vnode: VNode): Option[Fragment] =
+      if (vnode.tag == tag) Some(vnode.asInstanceOf[Fragment]) else None
   }
 
   @js.native
-  trait ComponentNode extends VNode {
-    type TagType = Component
+  trait Text extends VNode {
+    type TagType = String
+    override val tag = Text.tag
+  }
+
+  object Text {
+    val tag = "#"
+    def unapply(vnode: VNode): Option[Text] =
+      if (vnode.tag == tag) Some(vnode.asInstanceOf[Text]) else None
+  }
+
+  @js.native
+  trait Trusted extends VNode {
+    type TagType = String
+    val domSize: Int = js.native
+    override val tag = Trusted.tag
+  }
+
+  object Trusted {
+    val tag = "<"
+    def unapply(vnode: VNode): Option[Trusted] =
+      if (vnode.tag == tag) Some(vnode.asInstanceOf[Trusted]) else None
+  }
+
+  private[this] type MComponent = co.technius.scalajs.mithril.Component
+
+  @js.native
+  trait Component extends VNode {
+    type TagType = MComponent
   }
 
   type Child = VNode | js.Array[VNode] | String | Double

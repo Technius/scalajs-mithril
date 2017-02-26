@@ -28,7 +28,7 @@ object Mithril extends MithrilHyperscript {
 
   def trust(string: String): VNode = js.native
 
-  def fragment(attrs: js.Object, children: js.Array[VNode]): VNode.FragmentNode =
+  def fragment(attrs: js.Object, children: js.Array[VNode]): VNode.Fragment =
     js.native
 
   def redraw(): Unit = js.native
@@ -45,5 +45,6 @@ trait MithrilHyperscript extends js.Object {
   def apply(selector: String, children: Child): VNode = js.native
   def apply(selector: String, attributes: js.Object, children: Child): VNode = js.native
 
-  def apply(component: Component, attrs: js.Object = ???): VNode = js.native
+  def apply(component: Component, attrs: js.Object = ???): VNode.Component =
+    js.native
 }
