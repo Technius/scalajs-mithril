@@ -12,7 +12,7 @@ is required.
 ## Setup
 Add `scalajs-bundler` to `project/plugins.sbt`:
 ```scala
-addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.1")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.5.0")
 ```
 
 Then, add the following lines to `build.sbt`:
@@ -22,7 +22,7 @@ libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
 enablePlugins(ScalaJSBundlerPlugin)
 
 // Change mithril version to any version supported by this library
-npmDependencies in Compile += "mithril" -> "lhorie/mithril.js#rewrite"
+npmDependencies in Compile += "mithril" -> "1.0.1"
 ```
 
 Build your project with `fastOptJS::webpack`.
