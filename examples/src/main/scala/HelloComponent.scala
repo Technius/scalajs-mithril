@@ -24,6 +24,6 @@ object HelloComponent extends Component {
   }
 
   protected class State {
-    val name = m.prop("Name")
+    val name = MithrilStream("Name")
   }
 }

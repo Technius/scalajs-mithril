@@ -26,7 +26,7 @@ object DataFetchComponent extends Component {
   }
 
   protected class State {
-    val data = m.prop[js.Object]()
+    val data = MithrilStream[js.Object]()
   }
 
   object helpers {

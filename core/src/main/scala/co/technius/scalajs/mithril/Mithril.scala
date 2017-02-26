@@ -11,8 +11,6 @@ object Mithril extends MithrilCore with MithrilRendering with MithrilHtml {
 
   def request[T](options: XHROptions[T]): MStream[T] = js.native
 
-  val prop: MithrilProp = js.native
-
   val route: MithrilRoute = js.native
 
   def buildQueryString(`object`: js.Object): String = js.native

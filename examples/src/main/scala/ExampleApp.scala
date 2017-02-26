@@ -52,7 +52,7 @@ object ShowcaseComponent extends Component {
   }
 
   protected class State {
-    val selection = m.prop[String]()
+    val selection = MithrilStream[String]()
 
     val choices = Map[String, Component](
       "None" -> null,

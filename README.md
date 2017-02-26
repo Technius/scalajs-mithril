@@ -185,6 +185,9 @@ m.request(opts).foreach { data =>
 
 ## TODO
 
+* Implement `Promise`
+* Improve consistency of streams
+* Improve vnode and component facades
 * Improve `combine` and `merge` type signatures in MStream
 * Improve documentation
 * Fix issues/limitations (see relevant section above)

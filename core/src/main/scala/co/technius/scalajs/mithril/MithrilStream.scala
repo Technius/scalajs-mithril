@@ -1,10 +1,11 @@
 package co.technius.scalajs.mithril
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.{ JSImport, JSName }
 
 @js.native
-trait MithrilProp extends js.Object {
+@JSImport("mithril/stream", JSImport.Namespace)
+object MithrilStream extends js.Object {
 
   def apply[T](): MStream[T] = js.native
 
