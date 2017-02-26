@@ -23,7 +23,7 @@ object VNode {
   trait ElementNode extends VNode {
     type TagType = String
   }
-  
+
   @js.native
   trait FragmentNode extends VNode {
     type TagType = String
@@ -40,11 +40,11 @@ object VNode {
     type TagType = String
     val domSize: Int = js.native
   }
-  
+
   @js.native
   trait ComponentNode extends VNode {
     type TagType = Component
   }
-  
-  type Child = js.Array[VNode] | String | Double
+
+  type Child = VNode | js.Array[VNode] | String | Double
 }

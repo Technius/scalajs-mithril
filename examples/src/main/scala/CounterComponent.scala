@@ -31,8 +31,8 @@ object CounterComponent extends Component {
   protected class CounterState {
     val count: MStream[Int] = MithrilStream(0)
 
-    val increment = () => count() = _ + 1
-    val decrement = () => count() = math.max(0, count() - 1)
+    val increment = () => count.update(_ + 1)
+    val decrement = () => count.update(c => math.max(0, c - 1))
     val reset = () => count() = 0
   }
 
