@@ -157,9 +157,8 @@ m.request(opts).foreach { data =>
 }
 ```
 
-`T` is restricted to subtypes of `js.Any`, so Scala types can't be readily used
-with `m.request`. Of course, then response type could be parsed manually, but it
-may be more convenient to define a facade to hold the response data:
+By default, Mithril parses the response data into a `js.Object`. It may be
+convenient to define a facade to hold the response data:
 
 ```scala
 // Based on examples/src/main/resources/sample-data.json
@@ -185,7 +184,6 @@ m.request(opts).foreach { data =>
 
 ## TODO
 
-* Implement `Promise`
 * Improve consistency of streams
 * Improve vnode and component facades
 * Improve `combine` and `merge` type signatures in MStream

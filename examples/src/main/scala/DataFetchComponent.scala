@@ -33,13 +33,11 @@ object DataFetchComponent extends Component {
     def loadData(state: State): Unit = {
       val url = "../../../src/main/resources/sample-data.json"
       val opts = new XHROptions[js.Object](method = "GET", url = url)
-  
-      val req = m.request(opts)
-      req.run { data =>
-        state.data() = data
-        data
-      }
 
+      val req = m.request(opts)
+      req foreach { data =>
+        state.data() = data
+      }
     }
   }
 }
