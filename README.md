@@ -56,7 +56,7 @@ object MyComponent extends Component {
   }
 
   protected class State {
-    val name = m.prop("Name")
+    val name = MithrilStream("Name")
   }
 }
 
@@ -85,35 +85,63 @@ for complete examples.
 
 ## The Basics
 
-First, you'll need to define your component. To do this, create an object,
-subclass `Component` and implement the view function.
+This section assumes you are familiar with mithril. If you aren't, don't worry;
+mithril can be picked up very quickly.
 
+First, you'll need to define your component.
 ```scala
 object MyComponent extends Component {
-  val view: js.Function = () => js.Array(
+  type RootNode = GenericVNode[_, _]
+  def view(vnode: RootNode): VNode = m("div", js.Array(
     m("p", "Hello world!")
     m("p", "How fantastic!")
-  )
+  ))
+}
+```
+In this example, `RootNode` is defined as a `GenericVNode[_,_]`, which is
+parameterized on `State` and `Attrs`. `State` is the type that represents
+`vnode.state`;`Attrs` represents `vnode.attr`.
+
+To add some state to the component, create a `State` class and redefine
+`RootNode` to include it as a parameter:
+```scala
+object MyComponent extends Component {
+  type RootNode = GenericVNode[State, _]
+  def view(vnode: RootNode): VNode = {
+    import vnode.state
+    m("div", js.Array(
+      m("span", s"Hey there, ${state.name()}!"),
+      m("input[type=text]", js.Dynamic.literal(
+        oninput = m.withAttr("value", state.name),
+        value = ctrl.name()
+      ))
+    ))
+  }
+
+  protected class State {
+    val name = MithrilStream("Name")
+  }
 }
 ```
 
-In Mithril, a controller is optional. If you want to use a controller, create a
-class for your controller, override the `controller` function, and add the
-controller as an argument to your view function.
-
+Due to the way mithril handles the fields in the component, runtime errors
+occur if methods or functions are defined directly in the component from
+Scala.js. One possible workaround is to define the functions in an inner object:
 ```scala
-class MyComponent extends Component {
-  override val controller: js.Function = () => new MyController
-  val view: js.Function = (ctrl: Controller) => js.Array(
-    m("span", s"Hey there, ${ctrl.name()}!"),
-    m("input[type=text]", js.Dynamic.literal(
-      oninput = m.withAttr("value", ctrl.name),
-      value = ctrl.name()
-    ))
-  )
-
-  class MyController {
-    val name = m.prop("Name")
+object MyComponent extends Component {
+  type RootNode = GenericVNode[State, _]
+  def view(vnode: RootNode) = {
+    import helpers._
+    myFunction(vnode.state)
+    /* other code omitted */
+  }
+  
+  protected class State { /* contents omitted */ }
+  
+  object helpers {
+    def myFunction(state: State): Unit = {
+      // do stuff
+    }
   }
 }
 ```
