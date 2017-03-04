@@ -11,22 +11,31 @@ object MithrilStream extends js.Object {
 
   def apply[T](value: T): MStream[T] = js.native
 
-  def combine[T](combiner: js.Function, streams: js.Array[MStream[_]]): MStream[T] = js.native
+  /**
+    * Not type-safe
+    */
+  def combine(combiner: js.Function, streams: js.Array[MStream[Any]]): MStream[Any] = js.native
 
   def reject[T](value: Any): MStream[T] = js.native
 
   def merge(streams: js.Array[MStream[Any]]): MStream[js.Array[Any]] = js.native
 
+  @JSName("merge")
+  /**
+    * Type-safe alias for merge.
+    */
+  def sequence[T](streams: js.Array[MStream[T]]): MStream[js.Array[T]] = js.native
+
   def HALT: js.Any = js.native
 }
 
 @js.native
-trait MStream[T] extends js.Object {
+trait MStream[+T] extends js.Object {
 
   def run[U](callback: js.Function1[T, U]): MStream[U] = js.native
 
   def apply(): T = js.native
-  def apply(value: T): T = js.native
+  def apply[U >: T](value: U): U = js.native
 
   def end: MStream[Boolean] = js.native
 
@@ -42,7 +51,7 @@ trait MStream[T] extends js.Object {
 }
 
 object MStream {
-  implicit class RichMStream[T](val wrap: MStream[T]) extends AnyVal {
+  implicit class MStreamOps[T](val wrap: MStream[T]) extends AnyVal {
 
     /**
      * Syntax sugar for [[MStream!.apply(value* MStream.apply(value)]]
