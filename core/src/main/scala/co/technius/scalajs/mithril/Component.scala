@@ -7,6 +7,6 @@ import scala.annotation.meta.field
 
 @ScalaJSDefined
 trait Component extends js.Object {
-  protected type RootNode <: GenericVNode[_, _]
+  protected type RootNode <: GenericVNode[_]
   def view(vnode: RootNode): VNode
 }

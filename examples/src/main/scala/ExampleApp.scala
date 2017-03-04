@@ -14,7 +14,7 @@ object ExampleApp extends js.JSApp {
 @ScalaJSDefined
 object ShowcaseComponent extends Component {
 
-  type RootNode = GenericVNode[State, _]
+  type RootNode = GenericVNode[State]
 
   def oninit(vnode: RootNode) = {
     vnode.state = new State

@@ -8,7 +8,7 @@ import co.technius.scalajs.mithril._
 @ScalaJSDefined
 object CounterComponent extends Component {
 
-  type RootNode = GenericVNode[CounterState, _]
+  type RootNode = GenericVNode[CounterState]
 
   def oninit(vnode: RootNode) = {
     vnode.state = new CounterState

@@ -6,7 +6,7 @@ import co.technius.scalajs.mithril._
 @ScalaJSDefined
 object DataFetchComponent extends Component {
 
-  type RootNode = GenericVNode[State, _]
+  type RootNode = GenericVNode[State]
   def oninit(vnode: RootNode): Unit = {
     vnode.state = new State
   }

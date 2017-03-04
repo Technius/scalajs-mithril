@@ -4,18 +4,18 @@ import scala.scalajs.js
 import scala.scalajs.js.|
 
 @js.native
-sealed trait GenericVNode[State, Attrs] extends js.Object {
+sealed trait GenericVNode[State] extends js.Object {
   type TagType
   val tag: TagType = js.native
   val key: js.UndefOr[String] = js.native
-  val attrs: js.UndefOr[Attrs] = js.native
+  val attrs: js.Dictionary[Any] = js.native
   val children: js.Array[VNode] = js.native
   val text: js.UndefOr[String] = js.native
   var state: State = js.native
 }
 
 @js.native
-sealed trait VNode extends GenericVNode[js.Object, js.Object]
+sealed trait VNode extends GenericVNode[js.Object]
 
 object VNode {
 
