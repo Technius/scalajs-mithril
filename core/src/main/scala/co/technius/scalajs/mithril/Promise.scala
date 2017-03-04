@@ -53,10 +53,13 @@ trait Promise[+T] extends js.Object {
 
   @JSName("catch")
   /**
-    * An alias for `Promise.catch`
+    * An alias for `Promise.then`, with one caveat: `U` cannot be a `Promise[U]`.
+    * According to the [[https://mithril.js.org/promise.html#promisethen mithril documentation]],
+    * `recover` will automatically flatten any `Promise` returned by `f`.
     */
   def recover[U](f: js.Function1[Any, U]): Promise[U] = js.native
 
+  @JSName("catch")
   /**
     * An alias for `Promise.catch`
     */
