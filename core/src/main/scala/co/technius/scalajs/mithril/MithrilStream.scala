@@ -20,10 +20,10 @@ object MithrilStream extends js.Object {
 
   def merge(streams: js.Array[MStream[Any]]): MStream[js.Array[Any]] = js.native
 
-  @JSName("merge")
   /**
     * Type-safe alias for merge.
     */
+  @JSName("merge")
   def sequence[T](streams: js.Array[MStream[T]]): MStream[js.Array[T]] = js.native
 
   def HALT: js.Any = js.native
@@ -54,9 +54,9 @@ object MStream {
   implicit class MStreamOps[T](val wrap: MStream[T]) extends AnyVal {
 
     /**
-     * Syntax sugar for [[MStream!.apply(value* MStream.apply(value)]]
+     * Syntax sugar for [[co.technius.scalajs.mithril.MStream!.apply(*]]
      * @example {{{
-     * val count = m.prop(0)
+     * val count = MithrilStream[Int](0)
      * count() = 1
      * println(count()) // 1
      * }}}
@@ -65,10 +65,11 @@ object MStream {
 
     /**
      * Calls `f` with the current value and sets the value of the
-     * [[MithrilProp]] to the result of the function call.
+     * [[co.technius.scalajs.mithril.MithrilStream]] to the result of the function
+     * call.
      *
      * @example {{{
-     * val count = m.prop(0)
+     * val count = MithrilStream[Int](0)
      * count() = _ + 1
      * println(count()) // 1
      * }}}
