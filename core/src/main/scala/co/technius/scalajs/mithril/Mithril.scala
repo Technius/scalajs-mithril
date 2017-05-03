@@ -17,7 +17,7 @@ object Mithril extends MithrilHyperscript {
 
   val route: MithrilRoute = js.native
 
-  def request[T](options: XHROptions[T]): Promise[T] = js.native
+  def request[T](options: XHROptions[T]): js.Promise[T] = js.native
 
   def buildQueryString(`object`: js.Object): String = js.native
 

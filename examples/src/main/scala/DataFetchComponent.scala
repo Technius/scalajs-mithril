@@ -1,3 +1,4 @@
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
@@ -35,7 +36,7 @@ object DataFetchComponent extends Component {
       val opts = new XHROptions[js.Object](method = "GET", url = url)
 
       val req = m.request(opts)
-      req foreach { data =>
+      req.toFuture foreach { data =>
         state.data() = data
       }
     }

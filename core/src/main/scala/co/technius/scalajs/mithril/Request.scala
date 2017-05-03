@@ -7,14 +7,18 @@ import scala.scalajs.js.annotation.{ JSExportAll, ScalaJSDefined }
 
 @ScalaJSDefined
 class XHROptions[T](
-  var method: String,
   var url: String,
+  var method: js.UndefOr[String] = js.undefined,
+  var data: js.UndefOr[js.Object] = js.undefined,
+  var async: js.UndefOr[Boolean] = js.undefined,
   var user: js.UndefOr[String] = js.undefined,
   var password: js.UndefOr[String] = js.undefined,
-  var data: js.UndefOr[js.Object] = js.undefined,
-  var background: js.UndefOr[Boolean] = js.undefined,
-  var initialValue: js.UndefOr[Any] = js.undefined,
-  var unwrapSuccess: js.UndefOr[js.Function2[js.Any, XMLHttpRequest, T]] = js.undefined,
-  var unwrapError: js.UndefOr[js.Function2[js.Any, XMLHttpRequest, Any]] = js.undefined,
+  var withCredentials: js.UndefOr[Boolean] = js.undefined,
+  var config: js.UndefOr[js.Function1[XMLHttpRequest, XMLHttpRequest]] = js.undefined,
+  var headers: js.UndefOr[js.Object] = js.undefined,
+  var `type`: js.UndefOr[js.Function1[js.Any, T]] = js.undefined,
   var serialize: js.UndefOr[js.Function1[T, String]] = js.undefined,
-  var deserialize: js.UndefOr[js.Function1[String, T]] = js.undefined) extends js.Object
+  var deserialize: js.UndefOr[js.Function1[String, T]] = js.undefined,
+  var extract: js.UndefOr[js.Function2[XMLHttpRequest, XHROptions[T], T]] = js.undefined,
+  var useBody: js.UndefOr[Boolean] = js.undefined,
+  var background: js.UndefOr[Boolean] = js.undefined) extends js.Object

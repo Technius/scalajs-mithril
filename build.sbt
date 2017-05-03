@@ -37,7 +37,7 @@ lazy val examples =
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.1"
       ),
-      npmDependencies in Compile += "mithril" -> "1.0.1"
+      npmDependencies in Compile += "mithril" -> "1.1.1"
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)

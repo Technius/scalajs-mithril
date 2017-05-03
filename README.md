@@ -2,7 +2,7 @@
 
 This is an experimental library that provides facades for [Mithril](https://lhorie.github.io/mithril/index.html).
 
-You are currently viewing the `0.2.0` branch for the experimental `1.0.0` version
+0ou are currently viewing the `0.2.0` branch for the experimental `1.1.1` version
 of mithril. The stable `0.1.0` version of scalajs-mithril for mithril `0.2.5`
 can be found [here](/tree/v0.1.0).
 
@@ -22,7 +22,7 @@ libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
 enablePlugins(ScalaJSBundlerPlugin)
 
 // Change mithril version to any version supported by this library
-npmDependencies in Compile += "mithril" -> "1.0.1"
+npmDependencies in Compile += "mithril" -> "1.1.1"
 ```
 
 Build your project with `fastOptJS::webpack`.
@@ -180,7 +180,14 @@ val opts =
 
 Then, pass the options to `m.request`, which will return a `Promise[T]`:
 ```scala
-m.request(opts).foreach { data =>
+val reqPromise = m.request(opts)
+
+// convert Promise[T] to Future[T]
+// use of Future requires implicit ExecutionContext
+
+import scala.concurrent.ExecutionContext.Implicits.global
+
+reqPromise.toFuture.foreach { data =>
   println(data)
 }
 ```
@@ -190,6 +197,7 @@ convenient to define a facade to hold the response data:
 
 ```scala
 // Based on examples/src/main/resources/sample-data.json
+import scala.concurrent.ExecutionContext.Implicits.global
 @js.native
 trait MyData extends js.Object {
   val key: String
@@ -198,7 +206,7 @@ trait MyData extends js.Object {
 
 val opts = new XHROptions[MyData](method = "GET", url = "/path/to/request")
 
-m.request(opts).foreach { data =>
+m.request(opts).toFuture foreach { data =>
   println(data.key)
   println(data.some_number)
 }
@@ -212,10 +220,11 @@ m.request(opts).foreach { data =>
 
 ## TODO
 
+* Add missing functions from Mithril 1.1.1
 * Improve consistency of streams
 * Improve vnode and component facades
 * Improve `combine` and `merge` type signatures in MStream
-* Improve documentation
+* Create documentation
 * Fix issues/limitations (see relevant section above)
 * ScalaDoc
 * (In the not-so-far future) ScalaTags support
