@@ -6,7 +6,7 @@ import org.scalajs.dom
 @ScalaJSDefined
 object HelloComponent extends Component {
 
-  type RootNode = GenericVNode[State]
+  type RootNode = GenericVNode[State, _]
 
   def oninit(vnode: RootNode) = {
     vnode.state = new State
