@@ -36,11 +36,9 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 import org.scalajs.dom
 
 @ScalaJSDefined
-object MyComponent extends Component {
-
-  type RootNode = GenericVNode[State, _]
-
-  def oninit(vnode: RootNode) = {
+object MyComponent extends Component[MyComponentState, js.Object] {
+  
+  override val oninit = js.defined { (vnode: RootNode) =>
     vnode.state = new State
   }
 
@@ -55,9 +53,10 @@ object MyComponent extends Component {
     ))
   }
 
-  protected class State {
-    val name = MithrilStream("Name")
-  }
+}
+
+class MyComponentState {
+  val name = MithrilStream("Name")
 }
 
 object MyApp extends js.JSApp {
@@ -88,25 +87,30 @@ for complete examples.
 This section assumes you are familiar with mithril. If you aren't, don't worry;
 mithril can be picked up very quickly.
 
-First, you'll need to define your component.
+First, you'll need to define your component, which is parametized on `State`
+(for `vnode.state`) and `Attrs` (for `vnode.attrs`). If `State` and `Attrs` are
+not neccessary for the component, use `js.Object`.
+
 ```scala
-object MyComponent extends Component {
-  type RootNode = GenericVNode[_, _]
+object MyComponent extends Component[js.Object, js.Object] {
   def view(vnode: RootNode): VNode = m("div", js.Array(
     m("p", "Hello world!")
     m("p", "How fantastic!")
   ))
 }
 ```
-In this example, `RootNode` is defined as a `GenericVNode[_,_]`, which is
-parameterized on `State` and `Attrs`. `State` is the type that represents
-`vnode.state`;`Attrs` represents `vnode.attr`.
 
-To add some state to the component, create a `State` class and redefine
-`RootNode` to include it as a parameter:
+To use `vnode.state` in a component, create a class for `State` and change the
+`State` parameter in `Component`. Since `Component` is a subclass of
+`Lifecycle`, which contains facades for the lifecycle methods, `oninit` can be
+used to initialize the state:
+
 ```scala
-object MyComponent extends Component {
-  type RootNode = GenericVNode[State, _]
+object MyComponent extends Component[MyComponentState, js.Object] {
+  override val oninit = js.defined { (vnode: RootNode) =>
+    vnode.state = new MyComponentState
+  }
+
   def view(vnode: RootNode): VNode = {
     import vnode.state
     m("div", js.Array(
@@ -117,10 +121,10 @@ object MyComponent extends Component {
       ))
     ))
   }
+}
 
-  protected class State {
-    val name = MithrilStream("Name")
-  }
+class MyComponentState {
+  val name = MithrilStream("Name")
 }
 ```
 
@@ -128,22 +132,25 @@ Due to the way mithril handles the fields in the component, runtime errors
 occur if methods or functions are defined directly in the component from
 Scala.js. One possible workaround is to define the functions in an inner object:
 ```scala
-object MyComponent extends Component {
-  type RootNode = GenericVNode[State, _]
+object MyComponent extends Component[MyComponentState, js.Object] {
+  override val oninit = js.defined { (vnode: RootNode) =>
+    vnode.state = new MyComponentState
+  }
+
   def view(vnode: RootNode) = {
     import helpers._
     myFunction(vnode.state)
     /* other code omitted */
   }
   
-  protected class State { /* contents omitted */ }
-  
   object helpers {
-    def myFunction(state: State): Unit = {
+    def myFunction(state: MyComponentState): Unit = {
       // do stuff
     }
   }
 }
+
+class MyComponentState { /* contents omitted */ }
 ```
 
 Lastly, call `m.mount` with your controller:
@@ -157,6 +164,20 @@ object MyApp extends js.JSApp {
   def main(): Unit = {
     m.mount(dom.document.getElementById("app"), MyComponent)
   }
+}
+```
+
+To use `Attrs` in a component, define a class for `Attrs` and change the
+parameter on `Component`. The component should then be created by calling
+`m(component, attrs)` (see the TreeComponent example).
+
+```scala
+import co.technius.scalajs.mithril._
+
+case class MyAttrs(name: String)
+
+object MyComponent extends Component[js.Object, MyAttrs] {
+  def view(vnode: RootNode) = m("span", vnode.attrs.name)
 }
 ```
 
@@ -222,7 +243,7 @@ m.request(opts).toFuture foreach { data =>
 
 * Add missing functions from Mithril 1.1.1
 * Improve consistency of streams
-* Improve vnode and component facades
+* Improve vnode and component facades (?)
 * Improve `combine` and `merge` type signatures in MStream
 * Create documentation
 * Fix issues/limitations (see relevant section above)

@@ -5,11 +5,10 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 import co.technius.scalajs.mithril._
 
 @ScalaJSDefined
-object DataFetchComponent extends Component {
+object DataFetchComponent extends Component[DataFetchState, js.Object] {
 
-  type RootNode = GenericVNode[State, _]
-  def oninit(vnode: RootNode): Unit = {
-    vnode.state = new State
+  override val oninit = js.defined { (vnode: RootNode) =>
+    vnode.state = new DataFetchState
   }
 
   def view(vnode: RootNode) = {
@@ -26,12 +25,8 @@ object DataFetchComponent extends Component {
     ))
   }
 
-  protected class State {
-    val data = MithrilStream[js.Object]()
-  }
-
   object helpers {
-    def loadData(state: State): Unit = {
+    def loadData(state: DataFetchState): Unit = {
       val url = "../../../src/main/resources/sample-data.json"
       val opts = new XHROptions[js.Object](method = "GET", url = url)
 
@@ -41,4 +36,8 @@ object DataFetchComponent extends Component {
       }
     }
   }
+}
+
+protected class DataFetchState {
+  val data = MithrilStream[js.Object]()
 }

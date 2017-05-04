@@ -28,14 +28,14 @@ trait MithrilRoute extends js.Object {
  */
 @ScalaJSDefined
 abstract class RouteResolver extends js.Object {
-  def onmatch(resolve: js.Function1[Component, Unit], args: js.Object,
+  def onmatch(resolve: js.Function1[Component[_, _], Unit], args: js.Object,
       requestPath: String): Unit = ()
 
   def render(vnode: VNode): VNode = vnode
 }
 
 object MithrilRoute {
-  type Route = Component | RouteResolver
+  type Route = Component[_, _] | RouteResolver
   @inline implicit class RichMithrilRoute(val route: MithrilRoute) extends AnyVal {
     @inline def apply(rootElement: dom.raw.Element, defaultRoute: String)(routes: (String, Route)*): Unit = {
       route(rootElement, defaultRoute, js.Dictionary(routes: _*))

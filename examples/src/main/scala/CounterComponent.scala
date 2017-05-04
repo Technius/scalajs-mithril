@@ -6,11 +6,9 @@ import org.scalajs.dom
 import co.technius.scalajs.mithril._
 
 @ScalaJSDefined
-object CounterComponent extends Component {
+object CounterComponent extends Component[CounterState, js.Object] {
 
-  type RootNode = GenericVNode[CounterState, _]
-
-  def oninit(vnode: RootNode) = {
+  override val oninit = js.defined { (vnode: RootNode) =>
     vnode.state = new CounterState
   }
 
@@ -28,16 +26,16 @@ object CounterComponent extends Component {
     ))
   }
 
-  protected class CounterState {
-    val count: MStream[Int] = MithrilStream(0)
-
-    val increment = () => count.update(_ + 1)
-    val decrement = () => count.update(c => math.max(0, c - 1))
-    val reset = () => count() = 0
-  }
-
   object helpers {
     def btn(callback: js.Function, label: String) =
       m("button", json("onclick" -> callback), label)
   }
+}
+
+protected class CounterState {
+  val count: MStream[Int] = MithrilStream(0)
+
+  val increment = () => count.update(_ + 1)
+  val decrement = () => count.update(c => math.max(0, c - 1))
+  val reset = () => count() = 0
 }

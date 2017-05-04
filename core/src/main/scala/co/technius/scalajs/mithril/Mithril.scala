@@ -12,7 +12,7 @@ object Mithril extends MithrilHyperscript {
   def render(rootElement: dom.raw.Element, children: VNode.Child): Unit =
     js.native
 
-  def mount(rootElement: dom.raw.Element, component: Component): js.Object =
+  def mount(rootElement: dom.raw.Element, component: Component[_, _]): js.Object =
     js.native
 
   val route: MithrilRoute = js.native
@@ -45,6 +45,6 @@ trait MithrilHyperscript extends js.Object {
   def apply(selector: String, children: Child): VNode = js.native
   def apply(selector: String, attributes: js.Object, children: Child): VNode = js.native
 
-  def apply(component: Component, attrs: js.Object = ???): VNode.Component =
+  def apply[Attrs](component: Component[_,Attrs], attrs: Attrs = ???): VNode =
     js.native
 }

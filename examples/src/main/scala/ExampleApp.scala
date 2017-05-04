@@ -12,27 +12,29 @@ object ExampleApp extends js.JSApp {
 }
 
 @ScalaJSDefined
-object ShowcaseComponent extends Component {
+object ShowcaseComponent extends Component[ShowcaseState, js.Object] {
 
-  type RootNode = GenericVNode[State, _]
-
-  def oninit(vnode: RootNode) = {
-    vnode.state = new State
+  override val oninit = js.defined { (vnode: RootNode) =>
+    vnode.state = new ShowcaseState
   }
 
   def view(vnode: RootNode) = {
     import vnode.state
-    val compOpt: Option[Component] = for {
-      cname <- state.selection.toOption
-      comp <- state.choices.get(cname) if comp != null
-    } yield comp
 
-    val displaying: VNode = compOpt match {
-      case Some(x) => m(x)
-      case None => m("p", "Select an example to display!")
-    }
+    val choices = Seq[(String, VNode)](
+      "None" -> m(BlankComponent),
+      "Hello" -> m(HelloComponent),
+      "Counter" -> m(CounterComponent),
+      "Tree" -> m(TreeComponent, TreeAttrs("root")),
+      "Data Fetch" -> m(DataFetchComponent)
+    )
 
-    val choiceList = state.choices.keys map { n =>
+    val displaying =
+      state.selection.toOption
+        .flatMap(choices.toMap.get(_))
+        .getOrElse(m("p", "Select an example to display!"))
+
+    val choiceList = choices map { case (n, _) =>
       m("option", js.Dynamic.literal("value" -> n), n)
     }
 
@@ -50,15 +52,13 @@ object ShowcaseComponent extends Component {
       displaying
     ))
   }
+}
 
-  protected class State {
-    val selection = MithrilStream[String]()
+protected class ShowcaseState {
+  val selection = MithrilStream[String]()
+}
 
-    val choices = Map[String, Component](
-      "None" -> null,
-      "Hello" -> HelloComponent,
-      "Counter" -> CounterComponent,
-      "Data Fetch" -> DataFetchComponent
-    )
-  }
+@ScalaJSDefined
+object BlankComponent extends Component[js.Object, js.Object] {
+  override def view(node: RootNode) = m.fragment(new js.Object, js.Array())
 }

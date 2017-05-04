@@ -71,7 +71,7 @@ object VNode {
       if (vnode.tag == tag) Some(vnode.asInstanceOf[Trusted]) else None
   }
 
-  private[this] type MComponent = co.technius.scalajs.mithril.Component
+  private[this] type MComponent = co.technius.scalajs.mithril.Component[_, _]
 
   @js.native
   trait Component extends VNode {

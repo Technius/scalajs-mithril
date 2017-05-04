@@ -4,12 +4,10 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 import org.scalajs.dom
 
 @ScalaJSDefined
-object HelloComponent extends Component {
+object HelloComponent extends Component[HelloState, js.Object] {
 
-  type RootNode = GenericVNode[State, _]
-
-  def oninit(vnode: RootNode) = {
-    vnode.state = new State
+  override val oninit = js.defined { (vnode: RootNode) =>
+    vnode.state = new HelloState
   }
 
   def view(vnode: RootNode): VNode = {
@@ -24,6 +22,9 @@ object HelloComponent extends Component {
   }
 
   protected class State {
-    val name = MithrilStream("Name")
   }
+}
+
+class HelloState {
+  val name = MithrilStream("Name")
 }
