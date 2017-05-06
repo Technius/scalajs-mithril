@@ -26,7 +26,8 @@ object ShowcaseComponent extends Component[ShowcaseState, js.Object] {
       "Hello" -> m(HelloComponent),
       "Counter" -> m(CounterComponent),
       "Tree" -> m(TreeComponent, TreeAttrs("root")),
-      "Data Fetch" -> m(DataFetchComponent)
+      "Data Fetch" -> m(DataFetchComponent),
+      "Builder" -> m(BuilderDemo.component)
     )
 
     val displaying =
