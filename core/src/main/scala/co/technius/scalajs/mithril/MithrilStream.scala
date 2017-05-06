@@ -12,12 +12,15 @@ object MithrilStream extends js.Object {
   def apply[T](value: T): MStream[T] = js.native
 
   /**
-    * Not type-safe
+    * The type signature of this function cannot be written easily in Scala
     */
   def combine(combiner: js.Function, streams: js.Array[MStream[Any]]): MStream[Any] = js.native
 
-  def reject[T](value: Any): MStream[T] = js.native
-
+  /**
+    * `merge` is like `sequence` on Scala collection types except that it is
+    * parameterized on `Any`. Prefer `sequence` (defined as an alias) whenever
+    * possible.
+    */
   def merge(streams: js.Array[MStream[Any]]): MStream[js.Array[Any]] = js.native
 
   /**
@@ -26,22 +29,24 @@ object MithrilStream extends js.Object {
   @JSName("merge")
   def sequence[T](streams: js.Array[MStream[T]]): MStream[js.Array[T]] = js.native
 
+  /**
+    * Mithril's version of a `fold`. Use the `fold` method on `MStreamOps` for more
+    * familiar syntax.
+    */
+  def scan[A, B](f: js.Function2[B, A, B], accumulator: B, stream: MStream[A]): MStream[B] = js.native
+
+  def scanMerge[A, B](pairs: js.Array[(MStream[A], js.Function2[B, A, B])], acc: B): MStream[B] = js.native
+
   def HALT: js.Any = js.native
 }
 
 @js.native
 trait MStream[+T] extends js.Object {
 
-  def run[U](callback: js.Function1[T, U]): MStream[U] = js.native
-
   def apply(): T = js.native
   def apply[U >: T](value: U): U = js.native
 
   def end: MStream[Boolean] = js.native
-
-  def error: MStream[Any] = js.native
-
-  def `catch`[U](callback: js.Function1[Any, U]): MStream[U] = js.native
 
   @JSName("fantasy-land/map")
   def map[U](f: js.Function1[T, U]): MStream[U] = js.native
@@ -84,5 +89,11 @@ object MStream {
       val v = wrap()
       if (v == js.undefined) None else Some(v)
     }
+
+    /**
+      * Alias for `scan`.
+      */
+    @inline def fold[U](acc: U)(f: (U, T) => U): MStream[U] =
+      MithrilStream.scan(f, acc, wrap)
   }
 }

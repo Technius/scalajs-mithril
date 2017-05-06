@@ -244,7 +244,6 @@ m.request(opts).toFuture foreach { data =>
 * Add missing functions from Mithril 1.1.1
 * Improve consistency of streams
 * Improve vnode and component facades (?)
-* Improve `combine` and `merge` type signatures in MStream
 * Create documentation
 * Fix issues/limitations (see relevant section above)
 * ScalaDoc
