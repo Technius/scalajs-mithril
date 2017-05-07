@@ -32,17 +32,10 @@ Build your project with `fastOptJS::webpack`.
 ```scala
 import co.technius.scalajs.mithril._
 import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
 import org.scalajs.dom
 
-@ScalaJSDefined
-object MyComponent extends Component[MyComponentState, js.Object] {
-  
-  override val oninit = js.defined { (vnode: RootNode) =>
-    vnode.state = new State
-  }
-
-  def view(vnode: RootNode): VNode = {
+object MyModule {
+  val component = Component.stateful[State, js.Object](_ => new State) { vnode =>
     import vnode.state
     m("div", js.Array[VNode](
       m("span", s"Hi, ${state.name()}!"),
@@ -53,15 +46,14 @@ object MyComponent extends Component[MyComponentState, js.Object] {
     ))
   }
 
-}
-
-class MyComponentState {
-  val name = MithrilStream("Name")
+  class State {
+    val name = MithrilStream("Name")
+  }
 }
 
 object MyApp extends js.JSApp {
   def main(): Unit = {
-    m.mount(dom.document.getElementById("app"), MyComponent)
+    m.mount(dom.document.getElementById("app"), MyModule.component)
   }
 }
 ```
@@ -79,7 +71,7 @@ object MyApp extends js.JSApp {
 </html>
 ```
 
-See the [examples folder](https://github.com/Technius/scalajs-mithril/tree/master/examples/src/main/scala)
+See the [examples folder](https://github.com/Technius/scalajs-mithril/tree/0.2.0/examples/src/main/scala)
 for complete examples.
 
 ## The Basics
@@ -87,23 +79,116 @@ for complete examples.
 This section assumes you are familiar with mithril. If you aren't, don't worry;
 mithril can be picked up very quickly.
 
+A component is parametized on `State` (for `vnode.state`) and `Attrs` (for
+`vnode.attrs`). If `State` and `Attrs` are not neccessary for the component, use
+`js.Object` and `js.Dictionary[js.Any]` should be used instead, respectively.
+
+There are two ways to define a component using this library:
+
+1. Use one of the component helpers, such as `Component.stateful` or
+   `Component.viewOnly`.
+2. Subclass `Component`.
+
+While the helpers provide limited control over components, they are sufficiently
+powerful for most situations. If more control over a component is desired (e.g.
+overriding lifecycle methods), then subclass `Component` instead.
+
+Virtual DOM nodes (vnodes) are defined as `GenericVNode[State, Attr]`. For
+convenience, a type alias `VNode` is defined as `GenericVNode[js.Object,
+js.Dictionary[js.Any]]` to reduce the hassle of adding type signatures for
+vnodes.
+
+### Using the Helpers
+
+Defining a stateless component is very simple using the `Component.viewOnly` function:
+
+```scala
+import co.technius.scalajs.mithril._
+import scala.scalajs.js
+
+object HelloApp extends js.JSApp {
+  // viewOnly has the view function as an argument
+  val component = Component.viewOnly[js.Object] { vnode =>
+    m("div", "Hello world!")
+  }
+  
+  def main(): Unit = {
+    m.mount(dom.document.getElementById("app"), component)
+  }
+}
+```
+
+`viewOnly` is parameterized on `Attr`, so it's possible to handle arguments:
+
+```scala
+// First, create a class to represent the attriute object
+case class Attr(name: String)
+
+// Then, supply it as a type parameter to viewOnly
+val component = Component.viewOnly[Attr] { vnode =>
+  m("div", "Hello " + vnode.attr.name)
+}
+```
+
+It's more common to see stateful components, though. They can be defined using
+`Component.stateful`.
+
+```scala
+import co.technius.scalajs.mithril._
+import scala.scalajs.js
+
+object NameApp extends js.JSApp {
+
+  // Just like for attributes, define a state class to hold the state
+  protected class State {
+    var name = "Name"
+  }
+
+  // stateful has two arguments:
+  // - A function to create the state from a vnode
+  // - The view function
+  // It's also parameterized on state and attributes
+  val component = Component.stateful[State, js.Object](_ => new State) { vnode =>
+    import vnode.state
+    m("div", js.Array[VNode](
+      m("span", s"Hi, ${state.name}!"),
+      m("input[type=text]", js.Dynamic.literal(
+        oninput = m.withAttr("value", newName => state.name = newName),
+        value = state.name
+      ))
+    ))
+  }
+  
+  def main(): Unit = {
+    m.mount(dom.document.getElementById("app"), component)
+  }
+}
+```
+
+### Subclassing Component
+
+Subclassing component requires more boilerplate, but it gives more fine-grained
+control over the component's lifecycle.
+
 First, you'll need to define your component, which is parametized on `State`
 (for `vnode.state`) and `Attrs` (for `vnode.attrs`). If `State` and `Attrs` are
 not neccessary for the component, use `js.Object`.
 
 ```scala
 object MyComponent extends Component[js.Object, js.Object] {
-  def view(vnode: RootNode): VNode = m("div", js.Array(
-    m("p", "Hello world!")
-    m("p", "How fantastic!")
-  ))
+  // RootNode is defined as an alias
+  override val view = (vnode: RootNode) => {
+    m("div", js.Array(
+      m("p", "Hello world!")
+      m("p", "How fantastic!")
+    ))
+  }
 }
 ```
 
-To use `vnode.state` in a component, create a class for `State` and change the
-`State` parameter in `Component`. Since `Component` is a subclass of
-`Lifecycle`, which contains facades for the lifecycle methods, `oninit` can be
-used to initialize the state:
+`Component` is a subtrait of `Lifecycle`, which defines the lifecycle methods.
+Thus, it's possible to override the lifecycle methods in a `Component`. Here's
+an example of a stateful component that overrides `oninit` to set the state:
 
 ```scala
 object MyComponent extends Component[MyComponentState, js.Object] {
@@ -111,7 +196,7 @@ object MyComponent extends Component[MyComponentState, js.Object] {
     vnode.state = new MyComponentState
   }
 
-  def view(vnode: RootNode): VNode = {
+  override val view = { vnode: RootNode =>
     import vnode.state
     m("div", js.Array(
       m("span", s"Hey there, ${state.name()}!"),
@@ -137,7 +222,7 @@ object MyComponent extends Component[MyComponentState, js.Object] {
     vnode.state = new MyComponentState
   }
 
-  def view(vnode: RootNode) = {
+  override val view = { (vnode: RootNode) =>
     import helpers._
     myFunction(vnode.state)
     /* other code omitted */
@@ -199,15 +284,13 @@ val opts =
     background = true)
 ```
 
-Then, pass the options to `m.request`, which will return a `Promise[T]`:
+Then, pass the options to `m.request`, which will return a `js.Promise[T]`:
 ```scala
 val reqPromise = m.request(opts)
 
 // convert Promise[T] to Future[T]
 // use of Future requires implicit ExecutionContext
-
 import scala.concurrent.ExecutionContext.Implicits.global
-
 reqPromise.toFuture.foreach { data =>
   println(data)
 }
@@ -235,19 +318,17 @@ m.request(opts).toFuture foreach { data =>
 
 ## Known Issues/Limitations
 
-* Type safety isn't that good for components right now.
 * Using `Seq` for the `children` argument in `m(selector, children)` functions doesn't work. Instead, use `js.Array`.
 * `m(selector, children)` functions don't accept varargs yet. Instead, use `js.Array`.
 
 ## TODO
 
 * Add missing functions from Mithril 1.1.1
-* Improve consistency of streams
-* Improve vnode and component facades (?)
 * Create documentation
 * Fix issues/limitations (see relevant section above)
 * ScalaDoc
 * (In the not-so-far future) ScalaTags support
+* Write tests
 
 ## License
 This library is licensed under the MIT License. See LICENSE for more details.

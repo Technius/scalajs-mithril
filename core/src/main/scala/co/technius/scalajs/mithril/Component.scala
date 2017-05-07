@@ -7,7 +7,7 @@ import scala.annotation.meta.field
 
 @ScalaJSDefined
 trait Component[State, Attrs] extends Lifecycle[State, Attrs] {
-  def view(vnode: RootNode): VNode
+  def view: js.Function1[RootNode, VNode]
 }
 
 /**
@@ -28,17 +28,17 @@ trait Lifecycle[State, Attrs] extends js.Object {
     */
   type RootNode = GenericVNode[State, Attrs]
 
-  val oninit: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
+  def oninit: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
 
-  val oncreate: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
+  def oncreate: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
 
-  val onupdate: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
+  def onupdate: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
 
-  val onbeforeremove: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
+  def onbeforeremove: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
 
-  val onremove: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
+  def onremove: js.UndefOr[js.Function1[RootNode, Unit]] = js.undefined
 
-  val onbeforeupdate: js.UndefOr[js.Function2[RootNode, RootNode, Unit]] = js.undefined
+  def onbeforeupdate: js.UndefOr[js.Function2[RootNode, RootNode, Unit]] = js.undefined
 }
 
 object Component {
@@ -46,25 +46,19 @@ object Component {
     * Constructs a component given the state and a view function `State =>
     * VNode`. Due to the way Mithril works, this function is implemented by
     * wrapping the State in another object.
-    * @tparam State The state
+    * @tparam S The state
+    * @tparam A The attributes
+    * @param stateF The function to pass to `oninit` that will generate the state.
+    * @param viewF The view function.
     */
-  // TODO: Don't use ugly hacks
-  def build[State](state: State)(viewF: State => VNode): Component[js.Object, js.Object] =
-    new Component[js.Object, js.Object] {
-      // when oninit is defined, view and other variables aren't captured for some reason
+  def stateful[S, A](stateF: GenericVNode[S, A] => S)(viewF: GenericVNode[S, A] => VNode): Component[S, A] =
+    new Component[S, A] {
       override val oninit = js.defined { vnode =>
-        vnode.state = new WrappedState(state, viewF)
+        vnode.state = stateF(vnode)
       }
 
-      override def view(vnode: RootNode) = {
-        val wrappedState = vnode.state.asInstanceOf[WrappedState[State]]
-        wrappedState.view(wrappedState.state)
-      }
+      override val view = viewF
     }
-
-  @ScalaJSDefined
-  private class WrappedState[State](val state: State, val view: State => VNode)
-      extends js.Object
 
   /**
     * Constructs a component given a function that instantiates the view. Best
@@ -73,6 +67,6 @@ object Component {
     */
   def viewOnly[Attrs](viewF: GenericVNode[js.Object, Attrs] => VNode): Component[js.Object, Attrs] =
     new Component[js.Object, Attrs] {
-      override def view(vnode: RootNode) = viewF(vnode)
+      override val view = viewF
     }
 }

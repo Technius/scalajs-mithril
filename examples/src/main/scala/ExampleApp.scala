@@ -1,39 +1,32 @@
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
-import scala.scalajs.js.annotation.ScalaJSDefined
 import org.scalajs.dom
 
 import co.technius.scalajs.mithril._
 
 object ExampleApp extends js.JSApp {
   def main(): Unit = {
-    m.mount(dom.document.getElementById("app"), ShowcaseComponent)
+    m.mount(dom.document.getElementById("app"), Showcase.component)
   }
 }
 
-@ScalaJSDefined
-object ShowcaseComponent extends Component[ShowcaseState, js.Object] {
+object Showcase {
 
-  override val oninit = js.defined { (vnode: RootNode) =>
-    vnode.state = new ShowcaseState
+  val defaultComponent = Component.viewOnly[js.Object] { _ =>
+    m("p", "Select an example to display!")
   }
 
-  def view(vnode: RootNode) = {
+  val component = Component.stateful[State, js.Object](_ => new State) { vnode =>
     import vnode.state
 
+    val default = m(defaultComponent)
     val choices = Seq[(String, VNode)](
-      "None" -> m(BlankComponent),
-      "Hello" -> m(HelloComponent),
-      "Counter" -> m(CounterComponent),
-      "Tree" -> m(TreeComponent, TreeAttrs("root")),
-      "Data Fetch" -> m(DataFetchComponent),
-      "Builder" -> m(BuilderDemo.component)
+      "None" -> default,
+      "Hello" -> m(HelloDemo.component),
+      "Counter" -> m(CounterDemo.component),
+      "Tree" -> m(TreeDemo.component, TreeDemo.Attrs("root")),
+      "Data Fetch" -> m(DataFetchDemo.component)
     )
-
-    val displaying =
-      state.selection.toOption
-        .flatMap(choices.toMap.get(_))
-        .getOrElse(m("p", "Select an example to display!"))
 
     val choiceList = choices map { case (n, _) =>
       m("option", js.Dynamic.literal("value" -> n), n)
@@ -50,16 +43,11 @@ object ShowcaseComponent extends Component[ShowcaseState, js.Object] {
 
     m.fragment(js.Dynamic.literal(), js.Array[VNode](
       choiceBox,
-      displaying
+      choices.collectFirst({ case (n, s) if n == state.selection() => s }).getOrElse(default)
     ))
   }
-}
 
-protected class ShowcaseState {
-  val selection = MithrilStream[String]()
-}
-
-@ScalaJSDefined
-object BlankComponent extends Component[js.Object, js.Object] {
-  override def view(node: RootNode) = m.fragment(new js.Object, js.Array())
+  protected class State {
+    val selection = MithrilStream[String]("None")
+  }
 }
