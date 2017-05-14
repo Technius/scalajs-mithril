@@ -1,18 +1,19 @@
 # Scala.js facades for Mithril.js
 
-This is an experimental library that provides facades for [Mithril](https://lhorie.github.io/mithril/index.html).
+This is an experimental library that provides facades
+for [Mithril](https://lhorie.github.io/mithril/index.html).
 
-0ou are currently viewing the `0.2.0` branch for the experimental `1.1.1` version
-of mithril. The stable `0.1.0` version of scalajs-mithril for mithril `0.2.5`
-can be found [here](/tree/v0.1.0).
+At the moment, scalajs-mithril is being rewritten to support mithril `1.1.1`.
+The `0.1.0` version of scalajs-mithril for mithril `0.2.5` can be
+found [here](/tree/v0.1.0).
 
-Mithril 1.0.0 is significantly different from 0.2.0, which is why this rewrite
+Mithril 1.x.y is significantly different from 0.2.0, which is why this rewrite
 is required.
 
 ## Setup
 Add `scalajs-bundler` to `project/plugins.sbt`:
 ```scala
-addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.5.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.6.0")
 ```
 
 Then, add the following lines to `build.sbt`:
@@ -71,7 +72,7 @@ object MyApp extends js.JSApp {
 </html>
 ```
 
-See the [examples folder](https://github.com/Technius/scalajs-mithril/tree/0.2.0/examples/src/main/scala)
+See the [examples folder](/examples/src/main/scala)
 for complete examples.
 
 ## The Basics
@@ -216,6 +217,7 @@ class MyComponentState {
 Due to the way mithril handles the fields in the component, runtime errors
 occur if methods or functions are defined directly in the component from
 Scala.js. One possible workaround is to define the functions in an inner object:
+
 ```scala
 object MyComponent extends Component[MyComponentState, js.Object] {
   override val oninit = js.defined { (vnode: RootNode) =>
@@ -322,19 +324,14 @@ Compile the core project with `core/compile`. Examples can be built locally by
 running `fastOptJS::webpack` and then navigating to
 `examples/src/main/resources/index.html`. To run tests, use `tests/test`.
 
-## Known Issues/Limitations
-
-* Using `Seq` for the `children` argument in `m(selector, children)` functions doesn't work. Instead, use `js.Array`.
-* `m(selector, children)` functions don't accept varargs yet. Instead, use `js.Array`.
-
 ## TODO
 
 * Add missing functions from Mithril 1.1.1
 * Create documentation
-* Fix issues/limitations (see relevant section above)
 * ScalaDoc
 * (In the not-so-far future) ScalaTags support
-* Write tests
+* Write more tests
+* Add a component builder
 
 ## License
 This library is licensed under the MIT License. See LICENSE for more details.
