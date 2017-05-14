@@ -1,3 +1,5 @@
+val mithrilVersion = "1.1.1"
+
 lazy val root = (project in file("."))
   .settings(
     inThisBuild(Seq(
@@ -11,8 +13,8 @@ lazy val root = (project in file("."))
         "-Yno-adapted-args",
         "-Xlint",
         "-Xfatal-warnings"
-      ))
-    )
+      )
+    ))
   )
   .aggregate(core, examples)
 
@@ -24,10 +26,23 @@ lazy val core =
       version := "0.2.0-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.1",
-        "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+        "org.scalatest" %%% "scalatest" % "3.0.1" % "test"
       )
     )
     .enablePlugins(ScalaJSPlugin)
+
+lazy val tests =
+  Project("tests", file("tests"))
+    .settings(
+      name := "tests",
+      libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.1" % "test",
+      npmDependencies in Compile += "mithril" -> mithrilVersion,
+      requiresDOM in Test := true,
+      version in installJsdom := "9.12.0" // hack until bundler updates to sjs 0.6.16
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 
 lazy val examples =
   Project("examples", file("examples"))
@@ -37,7 +52,7 @@ lazy val examples =
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.1"
       ),
-      npmDependencies in Compile += "mithril" -> "1.1.1"
+      npmDependencies in Compile += "mithril" -> mithrilVersion
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)

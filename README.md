@@ -316,6 +316,12 @@ m.request(opts).toFuture foreach { data =>
 }
 ```
 
+## Compiling
+
+Compile the core project with `core/compile`. Examples can be built locally by
+running `fastOptJS::webpack` and then navigating to
+`examples/src/main/resources/index.html`. To run tests, use `tests/test`.
+
 ## Known Issues/Limitations
 
 * Using `Seq` for the `children` argument in `m(selector, children)` functions doesn't work. Instead, use `js.Array`.
