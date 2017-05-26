@@ -7,12 +7,14 @@ object ScalatagsDemo {
 
   val component = Component.stateful[State, js.Object](_ => new State) { vnode =>
     import vnode.state
-    val r = div(
-      p("Hello world!"),
-      p("Blargh")
+    div(
+      span(s"Hello from scalatags, ${state.name()}!"),
+      input(
+        `type` := "text",
+        value := state.name(),
+        oninput := m.withAttr("value", state.name)
+      )
     ).render
-    dom.console.log(r)
-    r
   }
 
   protected class State {

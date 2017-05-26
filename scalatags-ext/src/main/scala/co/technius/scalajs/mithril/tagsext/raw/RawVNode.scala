@@ -9,12 +9,12 @@ import org.scalajs.dom.raw.Node
 @JSImport("mithril/render/vnode", JSImport.Namespace)
 @js.native
 class RawVNode(
-    tag: String,
-    key: js.UndefOr[String],
-    attrs: js.UndefOr[js.Object],
-    children: VNode.Child,
-    text: js.UndefOr[String],
-    dom: js.UndefOr[Node]) extends js.Object {
+    val tag: String,
+    val key: js.UndefOr[String],
+    val attrs: js.UndefOr[js.Object],
+    val children: VNode.Child,
+    val text: js.UndefOr[String],
+    val dom: js.UndefOr[Node]) extends js.Object {
 }
 
 object RawVNode {

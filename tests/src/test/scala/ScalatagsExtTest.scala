@@ -12,32 +12,17 @@ class ScalatagsExtTest extends FlatSpec with Matchers {
     m.mount(div, comp)
   }
 
-  "Scalatags" should "compile" in {
+  "The bundle" should "compile" in {
     val comp = Component.viewOnly[js.Object] { vnode =>
       div(
+        VNodeScalatags.tags.a(href := "/example"),
         p("foo"),
-        p("bar")
+        p("bar"),
+        div(
+          p("baz")
+        )
       ).render
     }
     mountApp(comp)
   }
-
-  /* Test is failing at the moment -- need to fix it
-   *
-   * it should "produce output equal to manual creation" in {
-   *   val hyperscript =
-   *     m("div", js.Array[VNode](
-   *       m("p", "foo"),
-   *       m("p", "bar")
-   *     ))
-
-   *   val tags =
-   *     div(
-   *       p("foo"),
-   *       p("bar")
-   *     ).render
-
-   *   hyperscript should === (tags)
-   * }
-   */
 }
