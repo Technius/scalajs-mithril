@@ -1,4 +1,4 @@
-package co.technius.scalajs.mithril.tags
+package co.technius.scalajs.mithril.tagsext
 
 import co.technius.scalajs.mithril.VNode
 import scalatags.generic
