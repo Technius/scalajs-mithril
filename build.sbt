@@ -68,4 +68,4 @@ lazy val examples =
       npmDependencies in Compile += "mithril" -> mithrilVersion
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-    .dependsOn(core)
+    .dependsOn(core, scalatagsExt)

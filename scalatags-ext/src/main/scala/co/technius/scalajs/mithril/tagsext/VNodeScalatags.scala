@@ -18,24 +18,32 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
   override object styles extends Cap with Styles
   override object styles2 extends Cap with Styles2
   override object svgAttrs extends Cap with SvgAttrs
+  override object svgTags extends Cap with tagsext.SvgTags
 
   override object implicits extends Aggregate with DataConverters
 
   object all extends Cap
       with Attrs
+      with Styles
       with tagsext.Tags
       with DataConverters
       with Aggregate
 
   object short extends Cap
-      with tagsext.Tags2
+      with tagsext.Tags
       with DataConverters
-      with Aggregate {
+      with Aggregate
+      with AbstractShort {
 
     object * extends Cap with Attrs with Styles
   }
 
   trait Aggregate extends generic.Aggregate[VNode, VNode, VNode] {
+
+    implicit class ApplyTags(vnode: VNode) {
+      def applyTags(mods: Modifier*) = mods.foreach(_.applyTo(vnode))
+    }
+
     implicit def ClsModifier(s: stylesheet.Cls): Modifier = new Modifier {
       def applyTo(n: VNode): Unit = {
         val attrs = n.attrs.asInstanceOf[js.Dictionary[js.Any]]
@@ -69,10 +77,15 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
     def genericPixelStyle[T](implicit ev: StyleValue[T]): VNodeScalatags.PixelStyleValue[T]  = new GenericPixelStyle[T](ev)
     def genericPixelStylePx[T](implicit ev: StyleValue[String]): PixelStyleValue[T]  = new VNodeScalatags.GenericPixelStylePx[T](ev)
 
+    override val RawFrag = VNodeScalatags.RawFrag
+    override type RawFrag = VNodeScalatags.RawFrag
+
     override val StringFrag = VNodeScalatags.StringFrag
     override type StringFrag = VNodeScalatags.StringFrag
 
-    override def stringFrag(v: String) = VNodeScalatags.stringFrag(v)
+    override def raw(s: String) = RawFrag(s)
+
+    override implicit def stringFrag(v: String) = VNodeScalatags.stringFrag(v)
   }
 
   implicit def stringFrag(v: String): StringFrag = StringFrag(v)
@@ -101,6 +114,11 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
   case class StringFrag(v: String) extends tagsext.Frag {
     def render: VNode =
       new raw.RawVNode("#", js.undefined, js.undefined, v, js.undefined, js.undefined)
+  }
+
+  object RawFrag extends Companion[RawFrag]
+  case class RawFrag(v: String) extends tagsext.Frag {
+    def render: VNode = m.trust(v)
   }
 
   class GenericAttr[T] extends AttrValue[T] {
