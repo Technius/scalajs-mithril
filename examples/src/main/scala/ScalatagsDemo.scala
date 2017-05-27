@@ -13,7 +13,15 @@ object ScalatagsDemo {
         `type` := "text",
         value := state.name(),
         oninput := m.withAttr("value", state.name)
-      )
+      ),
+      embeddedComponent
+    ).render
+  }
+
+  val embeddedComponent = Component.viewOnly[js.Object] { vnode =>
+    div(
+      p("It's possible to embed components in the tags, too! Let's embed the Counter demo!"),
+      CounterDemo.component
     ).render
   }
 

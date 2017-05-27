@@ -20,7 +20,9 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
   override object svgAttrs extends Cap with SvgAttrs
   override object svgTags extends Cap with tagsext.SvgTags
 
-  override object implicits extends Aggregate with DataConverters
+  override object implicits extends Aggregate
+      with DataConverters
+      with LowPriorityImplicits
 
   object all extends Cap
       with Attrs
@@ -174,14 +176,22 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
 
 trait LowPriorityImplicits {
   implicit object bindJsAny extends generic.AttrValue[VNode, js.Any] {
-    def apply(vnode: VNode, attr: generic.Attr, value: js.Any): Unit = {
+    override def apply(vnode: VNode, attr: generic.Attr, value: js.Any): Unit = {
       vnode.attrs(attr.name) = value
     }
   }
 
   implicit object bindJsFunction extends generic.AttrValue[VNode, js.Function] {
-    def apply(vnode: VNode, attr: generic.Attr, f: js.Function): Unit = {
+    override def apply(vnode: VNode, attr: generic.Attr, f: js.Function): Unit = {
       vnode.attrs(attr.name) = f
     }
+  }
+
+  implicit class bindComponent[S,A](c: Component[S, A]) extends tagsext.Frag {
+    override def render: VNode = m(c)
+  }
+
+  implicit class bindVNode(vnode: VNode) extends tagsext.Frag {
+    override def render: VNode = vnode
   }
 }
