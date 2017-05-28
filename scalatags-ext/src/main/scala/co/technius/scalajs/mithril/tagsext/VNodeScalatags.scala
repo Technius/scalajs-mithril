@@ -51,18 +51,8 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
     implicit def ClsModifier(s: stylesheet.Cls): Modifier = new Modifier {
       def applyTo(n: VNode): Unit = {
         val attrs = n.attrs.asInstanceOf[js.Dictionary[js.Any]]
-        attrs.get("class") match {
-          case Some(cx) =>
-            val classes =
-              if (cx.isInstanceOf[js.Array[_]]) {
-                cx.asInstanceOf[js.Array[String]]
-              } else {
-                new js.Array[String]()
-              }
-            classes += s.toString
-          case None =>
-            attrs("class") = js.Array(s.toString)
-        }
+        val cx = attrs.get("class").map(_.toString + " ") + s.toString
+        attrs("class") = cx
       }
     }
 
