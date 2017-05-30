@@ -115,13 +115,17 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
     def render: VNode = m.trust(v)
   }
 
+  // TODO: ugly hack, needs to be refactored
+  def createAttrsIfNeeded(vnode: VNode): Unit = {
+    val rawNode = vnode.asInstanceOf[raw.RawVNode]
+    if (rawNode.attrs == js.undefined) {
+      rawNode.asInstanceOf[js.Dynamic].attrs = new js.Object
+    }
+  }
+
   class GenericAttr[T] extends AttrValue[T] {
     override def apply(vnode: VNode, attr: Attr, value: T): Unit = {
-      // TODO: ugly hack, needs to be refactored
-      val rawNode = vnode.asInstanceOf[raw.RawVNode]
-      if (rawNode.attrs == js.undefined) {
-        rawNode.asInstanceOf[js.Dynamic].attrs = new js.Object
-      }
+      createAttrsIfNeeded(vnode)
       vnode.attrs += attr.name -> value.toString
     }
   }
@@ -135,12 +139,13 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
   }
 
   class GenericStyle[T] extends StyleValue[T] {
-    override def apply(t: VNode, s: Style, v: T): Unit = {
+    override def apply(vnode: VNode, style: Style, value: T): Unit = {
+      createAttrsIfNeeded(vnode)
       val styles =
-        t.attrs.getOrElseUpdate("style", js.Dictionary[js.Any]())
-          .asInstanceOf[js.Dictionary[js.Any]]
+        vnode.attrs.getOrElseUpdate("style", js.Dictionary[Any]())
+          .asInstanceOf[js.Dictionary[Any]]
 
-      styles(s.cssName) = v.toString
+      styles(style.cssName) = value
     }
   }
 
@@ -171,9 +176,9 @@ trait LowPriorityImplicits {
     }
   }
 
-  implicit object bindJsFunction extends generic.AttrValue[VNode, js.Function] {
-    override def apply(vnode: VNode, attr: generic.Attr, f: js.Function): Unit = {
-      vnode.attrs(attr.name) = f
+  implicit def bindJsAnyLike[T](implicit ev: T => js.Any) = new generic.AttrValue[VNode, T] {
+    override def apply(vnode: VNode, attr: generic.Attr, value: T): Unit = {
+      vnode.attrs(attr.name) = value
     }
   }
 

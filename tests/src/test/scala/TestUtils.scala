@@ -3,10 +3,10 @@ import org.scalajs.dom
 import scala.scalajs.js
 
 trait TestUtils {
-  def mountApp(comp: Component[_, _]): dom.Element = {
+  def mountApp(comp: Component[_, _]): dom.html.Element = {
     val div = dom.document.createElement("div")
     dom.document.body.appendChild(div)
     m.mount(div, comp)
-    div
+    div.asInstanceOf[dom.html.Element]
   }
 }
