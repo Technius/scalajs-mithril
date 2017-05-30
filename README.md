@@ -10,6 +10,18 @@ found [here](/tree/v0.1.0).
 Mithril 1.x.y is significantly different from 0.2.0, which is why this rewrite
 is required.
 
+## Table of Contents
+
+* [Setup](#setup)
+* [Example](#example)
+* [The Basics](#the-basics)
+  * [Using the Helpers](#using-the-helpers)
+  * [Subclassing Component](#subclassing-component)
+* [Making Web Requests](#making-web-requests)
+* [Scalatags Support](#scalatags-support)
+* [Compiling](#compiling)
+* [License](#license)
+
 ## Setup
 Add `scalajs-bundler` to `project/plugins.sbt`:
 ```scala
@@ -318,6 +330,59 @@ m.request(opts).toFuture foreach { data =>
 }
 ```
 
+## Scalatags Support
+
+There is also support for [Scalatags](http://lihaoyi.com/scalatags), which can
+make it easier to create views. Add the following line to `build.sbt`:
+
+```scala
+libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
+```
+
+Then, import `co.technius.scalajs.mithril.VNodeScalatags.all._`. If you already
+imported the `mithril` package as a wildcard, simply import
+`VNodeScalatags.all._`. You can then use tags in your components:
+
+```scala
+val component = Component.viewOnly[js.Object] { vnode =>
+  div(id := "my-div")(
+    p("Hello world!")
+  ).render
+}
+```
+
+It's also possible to use `VNode`s with scalatags:
+
+```scala
+val embeddedComponent = Component.viewOnly[js.Object] { vnode =>
+  p("My embedded component").render
+}
+
+val component = Component.viewOnly[js.Object] { vnode =>
+  div(
+    m("p", "My root component"),
+    m(embeddedComponent)
+  ).render
+}
+```
+
+The lifecycle methods, as well as `key`, are usable as attributes in scalatags:
+
+```scala
+class Attrs(items: scala.collection.mutable.Map[String, String])
+
+val component = Component.viewOnly[Attrs] { vnode =>
+  ul(oninit := { () => println("Initialized!") })(
+    vnode.attrs.items.map {
+      case (id, name) => li(key := id, name)
+    }
+  ).render
+}
+```
+
+See the [scalatags demo](/examples/src/main/scala/ScalatagsDemo.scala) for an
+example.
+
 ## Compiling
 
 Compile the core project with `core/compile`. Examples can be built locally by
@@ -329,9 +394,9 @@ running `fastOptJS::webpack` and then navigating to
 * Add missing functions from Mithril 1.1.1
 * Create documentation
 * ScalaDoc
-* (In the not-so-far future) ScalaTags support
 * Write more tests
 * Add a component builder
+* GitHub Pages
 
 ## License
 This library is licensed under the MIT License. See LICENSE for more details.
