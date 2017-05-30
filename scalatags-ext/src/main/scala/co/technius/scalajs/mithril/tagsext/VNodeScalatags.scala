@@ -13,7 +13,7 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
     with generic.Aliases[VNode, VNode, VNode]
     with VNodeUtils {
 
-  override object attrs extends Cap with MithrilAttrs
+  override object attrs extends Cap with tagsext.Attrs
   override object tags extends Cap with tagsext.Tags
   override object tags2 extends Cap with tagsext.Tags2
   override object styles extends Cap with Styles
@@ -26,7 +26,7 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
       with LowPriorityImplicits
 
   object all extends Cap
-      with MithrilAttrs
+      with tagsext.Attrs
       with Styles
       with tagsext.Tags
       with DataConverters
@@ -40,17 +40,7 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
       with AbstractShort
       with LowPriorityImplicits {
 
-    object * extends Cap with MithrilAttrs with Styles
-  }
-
-  trait MithrilAttrs extends Attrs {
-    val key = attr("key")
-    val oninit = attr("oninit")
-    val oncreate = attr("oncreate")
-    val onupdate = attr("onupdate")
-    val onbeforeremove = attr("onbeforeremove")
-    val onremove = attr("onremove")
-    val onbeforeupdate = attr("onbeforeupdate")
+    object * extends Cap with tagsext.Attrs with Styles
   }
 
   trait Aggregate extends generic.Aggregate[VNode, VNode, VNode] {
