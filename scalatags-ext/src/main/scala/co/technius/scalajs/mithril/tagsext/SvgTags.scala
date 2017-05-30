@@ -3,6 +3,9 @@ package co.technius.scalajs.mithril.tagsext
 import co.technius.scalajs.mithril.VNode
 import scalatags.generic
 
+/*
+ * Adapted from Scalatags by Li Haoyi, which is licensed under MIT License.
+ */
 trait SvgTags extends generic.SvgTags[VNode, VNode, VNode] with TagFactory {
   lazy val altGlyph = svgTag("altGlyph")
   lazy val altGlyphDef = svgTag("altGlyphDef")

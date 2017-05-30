@@ -8,7 +8,9 @@ import scalatags.{ Companion, DataConverters, generic, stylesheet }
 
 import tagsext.raw
 
-// Adapted from scalatags
+/*
+ * Adapted from Scalatags by Li Haoyi, which is licensed under MIT License.
+ */
 object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
     with generic.Aliases[VNode, VNode, VNode]
     with VNodeUtils {

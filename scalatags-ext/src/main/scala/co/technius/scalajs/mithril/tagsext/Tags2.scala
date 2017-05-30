@@ -3,7 +3,9 @@ package co.technius.scalajs.mithril.tagsext
 import co.technius.scalajs.mithril.VNode
 import scalatags.generic
 
-// Adapted from scalatags
+/*
+ * Adapted from Scalatags by Li Haoyi, which is licensed under MIT License.
+ */
 trait Tags2 extends generic.Tags2[VNode, VNode, VNode] with TagFactory {
   // Document Metadata
   lazy val title = tag("title")
