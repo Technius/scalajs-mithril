@@ -8,4 +8,8 @@ trait TagFactory extends generic.Util[VNode, VNode, VNode] {
   override def tag(s: String, void: Boolean = false): ConcreteHtmlTag[VNode] = {
     makeAbstractTypedTag[VNode](s, void, Namespace.htmlNamespaceConfig)
   }
+
+  def svgTag(s: String, void: Boolean = false): ConcreteHtmlTag[VNode] = {
+    makeAbstractTypedTag[VNode](s, void, Namespace.svgNamespaceConfig)
+  }
 }
