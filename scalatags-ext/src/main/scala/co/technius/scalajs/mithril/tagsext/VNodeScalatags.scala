@@ -10,9 +10,10 @@ import tagsext.raw
 
 // Adapted from scalatags
 object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
-    with generic.Aliases[VNode, VNode, VNode] {
+    with generic.Aliases[VNode, VNode, VNode]
+    with VNodeUtils {
 
-  override object attrs extends Cap with Attrs
+  override object attrs extends Cap with MithrilAttrs
   override object tags extends Cap with tagsext.Tags
   override object tags2 extends Cap with tagsext.Tags2
   override object styles extends Cap with Styles
@@ -25,7 +26,7 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
       with LowPriorityImplicits
 
   object all extends Cap
-      with Attrs
+      with MithrilAttrs
       with Styles
       with tagsext.Tags
       with DataConverters
@@ -39,7 +40,17 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
       with AbstractShort
       with LowPriorityImplicits {
 
-    object * extends Cap with Attrs with Styles
+    object * extends Cap with MithrilAttrs with Styles
+  }
+
+  trait MithrilAttrs extends Attrs {
+    val key = attr("key")
+    val oninit = attr("oninit")
+    val oncreate = attr("oncreate")
+    val onupdate = attr("onupdate")
+    val onbeforeremove = attr("onbeforeremove")
+    val onremove = attr("onremove")
+    val onbeforeupdate = attr("onbeforeupdate")
   }
 
   trait Aggregate extends generic.Aggregate[VNode, VNode, VNode] {
@@ -49,15 +60,16 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
     }
 
     implicit def ClsModifier(s: stylesheet.Cls): Modifier = new Modifier {
-      def applyTo(n: VNode): Unit = {
+      override def applyTo(n: VNode): Unit = {
+        createAttrsIfNeeded(n)
         val attrs = n.attrs.asInstanceOf[js.Dictionary[js.Any]]
-        val cx = attrs.get("class").map(_.toString + " ") + s.toString
+        val cx = attrs.get("class").map(_.toString + " ").getOrElse("") + s.toString
         attrs("class") = cx
       }
     }
 
     implicit class StyleFrag(s: generic.StylePair[VNode, _]) extends stylesheet.StyleSheetFrag {
-      def applyTo(st: stylesheet.StyleTree): stylesheet.StyleTree = {
+      override def applyTo(st: stylesheet.StyleTree): stylesheet.StyleTree = {
         val dummyDiv = m("div")
         s.applyTo(dummyDiv)
         val styles = dummyDiv.attrs("style").asInstanceOf[js.Dictionary[js.Any]]
@@ -66,10 +78,10 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
       }
     }
 
-    def genericAttr[T] = new VNodeScalatags.GenericAttr[T]
-    def genericStyle[T] = new VNodeScalatags.GenericStyle[T]
-    def genericPixelStyle[T](implicit ev: StyleValue[T]): VNodeScalatags.PixelStyleValue[T]  = new GenericPixelStyle[T](ev)
-    def genericPixelStylePx[T](implicit ev: StyleValue[String]): PixelStyleValue[T]  = new VNodeScalatags.GenericPixelStylePx[T](ev)
+    override def genericAttr[T] = new VNodeScalatags.GenericAttr[T]
+    override def genericStyle[T] = new VNodeScalatags.GenericStyle[T]
+    override def genericPixelStyle[T](implicit ev: StyleValue[T]): VNodeScalatags.PixelStyleValue[T]  = new GenericPixelStyle[T](ev)
+    override def genericPixelStylePx[T](implicit ev: StyleValue[String]): PixelStyleValue[T]  = new VNodeScalatags.GenericPixelStylePx[T](ev)
 
     override val RawFrag = VNodeScalatags.RawFrag
     override type RawFrag = VNodeScalatags.RawFrag
@@ -113,14 +125,6 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
   object RawFrag extends Companion[RawFrag]
   case class RawFrag(v: String) extends tagsext.Frag {
     def render: VNode = m.trust(v)
-  }
-
-  // TODO: ugly hack, needs to be refactored
-  def createAttrsIfNeeded(vnode: VNode): Unit = {
-    val rawNode = vnode.asInstanceOf[raw.RawVNode]
-    if (rawNode.attrs == js.undefined) {
-      rawNode.asInstanceOf[js.Dynamic].attrs = new js.Object
-    }
   }
 
   class GenericAttr[T] extends AttrValue[T] {
@@ -169,15 +173,17 @@ object VNodeScalatags extends generic.Bundle[VNode, VNode, VNode]
   }
 }
 
-trait LowPriorityImplicits {
+trait LowPriorityImplicits extends VNodeUtils {
   implicit object bindJsAny extends generic.AttrValue[VNode, js.Any] {
     override def apply(vnode: VNode, attr: generic.Attr, value: js.Any): Unit = {
+      createAttrsIfNeeded(vnode)
       vnode.attrs(attr.name) = value
     }
   }
 
   implicit def bindJsAnyLike[T](implicit ev: T => js.Any) = new generic.AttrValue[VNode, T] {
     override def apply(vnode: VNode, attr: generic.Attr, value: T): Unit = {
+      createAttrsIfNeeded(vnode)
       vnode.attrs(attr.name) = value
     }
   }
@@ -188,5 +194,15 @@ trait LowPriorityImplicits {
 
   implicit class bindVNode(vnode: VNode) extends tagsext.Frag {
     override def render: VNode = vnode
+  }
+}
+
+private[mithril] trait VNodeUtils {
+  // TODO: ugly hack, needs to be refactored
+  protected def createAttrsIfNeeded(vnode: VNode): Unit = {
+    val rawNode = vnode.asInstanceOf[raw.RawVNode]
+    if (rawNode.attrs == js.undefined) {
+      rawNode.asInstanceOf[js.Dynamic].attrs = new js.Object
+    }
   }
 }
