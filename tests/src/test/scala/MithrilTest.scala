@@ -3,13 +3,7 @@ import org.scalatest._
 import org.scalajs.dom
 import scala.scalajs.js
 
-class MithrilTest extends FlatSpec with Matchers {
-
-  def mountApp(comp: Component[_, _]): Unit = {
-    val div = dom.document.createElement("div")
-    dom.document.body.appendChild(div)
-    m.mount(div, comp)
-  }
+class MithrilTest extends FlatSpec with Matchers with TestUtils {
 
   "The facade" should "work" in {
     // if the mithril functions don't work, this test will fail

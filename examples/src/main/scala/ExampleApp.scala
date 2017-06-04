@@ -25,7 +25,8 @@ object Showcase {
       "Hello" -> m(HelloDemo.component),
       "Counter" -> m(CounterDemo.component),
       "Tree" -> m(TreeDemo.component, TreeDemo.Attrs("root")),
-      "Data Fetch" -> m(DataFetchDemo.component)
+      "Data Fetch" -> m(DataFetchDemo.component),
+      "Scalatags Demo" -> m(ScalatagsDemo.component)
     )
 
     val choiceList = choices map { case (n, _) =>

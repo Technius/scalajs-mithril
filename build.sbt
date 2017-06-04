@@ -16,7 +16,7 @@ lazy val root = (project in file("."))
       )
     ))
   )
-  .aggregate(core, examples)
+  .aggregate(core, scalatagsExt, examples)
 
 lazy val core =
   Project("core", file("core"))
@@ -31,6 +31,19 @@ lazy val core =
     )
     .enablePlugins(ScalaJSPlugin)
 
+lazy val scalatagsExt =
+  Project("scalatags-ext", file("scalatags-ext"))
+    .settings(Publish.settings: _*)
+    .settings(
+      name := """scalajs-mithril-scalatags""",
+      version := "0.2.0-SNAPSHOT",
+      libraryDependencies ++= Seq(
+        "com.lihaoyi" %%% "scalatags" % "0.6.5"
+      )
+    )
+    .enablePlugins(ScalaJSPlugin)
+    .dependsOn(core)
+
 lazy val tests =
   Project("tests", file("tests"))
     .settings(
@@ -41,7 +54,7 @@ lazy val tests =
       version in installJsdom := "9.12.0" // hack until bundler updates to sjs 0.6.16
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-    .dependsOn(core)
+    .dependsOn(core, scalatagsExt)
 
 
 lazy val examples =
@@ -55,4 +68,4 @@ lazy val examples =
       npmDependencies in Compile += "mithril" -> mithrilVersion
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-    .dependsOn(core)
+    .dependsOn(core, scalatagsExt)
