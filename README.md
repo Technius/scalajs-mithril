@@ -354,6 +354,7 @@ val component = Component.viewOnly[js.Object] { vnode =>
 It's also possible to use `VNode`s with scalatags:
 
 ```scala
+// Components are also VNodes
 val embeddedComponent = Component.viewOnly[js.Object] { vnode =>
   p("My embedded component").render
 }
@@ -361,7 +362,7 @@ val embeddedComponent = Component.viewOnly[js.Object] { vnode =>
 val component = Component.viewOnly[js.Object] { vnode =>
   div(
     m("p", "My root component"),
-    m(embeddedComponent)
+    embeddedComponent
   ).render
 }
 ```
@@ -386,7 +387,7 @@ example.
 ## Compiling
 
 Compile the core project with `core/compile`. Examples can be built locally by
-running `fastOptJS::webpack` and then navigating to
+running `examples/fastOptJS::webpack` and then navigating to
 `examples/src/main/resources/index.html`. To run tests, use `tests/test`.
 
 ## TODO
