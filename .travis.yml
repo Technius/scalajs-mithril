@@ -23,6 +23,7 @@ install:
   - . $HOME/.nvm/nvm.sh
   - nvm install stable; nvm use stable
   - nvm use stable
+  - npm install webpack
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION tests/test
