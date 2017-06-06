@@ -9,9 +9,6 @@ scala:
 jdk:
   - oraclejdk8
 
-env:
-  - TRAVIS_NODE_VERSION="6"
-
 cache:
   directories:
     - $HOME/.ivy2/cache
@@ -21,6 +18,11 @@ before_cache:
   # Cleanup the cached directories to avoid unnecessary cache updates
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
   - find $HOME/.sbt        -name "*.lock"               -print -delete
+
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable; nvm use stable
+  - nvm use stable
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION tests/test
