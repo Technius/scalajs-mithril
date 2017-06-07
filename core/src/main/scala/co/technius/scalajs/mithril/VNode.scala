@@ -37,7 +37,6 @@ object VNode {
   trait Fragment extends VNode {
     type TagType = String
     val domSize: Int = js.native
-    override val tag = Fragment.tag
   }
 
   object Fragment {
@@ -49,7 +48,6 @@ object VNode {
   @js.native
   trait Text extends VNode {
     type TagType = String
-    override val tag = Text.tag
   }
 
   object Text {
@@ -62,7 +60,6 @@ object VNode {
   trait Trusted extends VNode {
     type TagType = String
     val domSize: Int = js.native
-    override val tag = Trusted.tag
   }
 
   object Trusted {

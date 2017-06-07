@@ -29,7 +29,7 @@ class MithrilTest extends FlatSpec with Matchers with TestUtils {
   it should "support streams" in {
     val s = MithrilStream[Int](5)
     s() shouldBe (5)
-    val child = s.map(_ + 5)
+    val child = s.map((_: Int) + 5)
     child() shouldBe (10)
     s() = 10
     child() shouldBe(15)

@@ -53,11 +53,12 @@ object Component {
     */
   def stateful[S, A](stateF: GenericVNode[S, A] => S)(viewF: GenericVNode[S, A] => VNode): Component[S, A] =
     new Component[S, A] {
-      override val oninit = js.defined { vnode =>
-        vnode.state = stateF(vnode)
-      }
+      override val oninit: js.UndefOr[js.Function1[GenericVNode[S,A], Unit]] =
+        js.defined { vnode: GenericVNode[S,A] =>
+          vnode.state = stateF(vnode)
+        }
 
-      override val view = viewF
+      override val view: js.Function1[GenericVNode[S,A], VNode] = viewF
     }
 
   /**
@@ -67,6 +68,6 @@ object Component {
     */
   def viewOnly[Attrs](viewF: GenericVNode[js.Object, Attrs] => VNode): Component[js.Object, Attrs] =
     new Component[js.Object, Attrs] {
-      override val view = viewF
+      override val view: js.Function1[GenericVNode[js.Object,Attrs], VNode] = viewF
     }
 }
