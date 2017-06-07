@@ -4,6 +4,7 @@ import Keys._
 object Publish {
   lazy val settings = Seq(
     publishMavenStyle := true,
+    publishArtifact := true,
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
     publishTo := {
