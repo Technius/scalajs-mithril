@@ -1,5 +1,7 @@
 # Scala.js facades for Mithril.js
 
+[![Build Status](https://travis-ci.org/Technius/scalajs-mithril.svg?branch=master)](https://travis-ci.org/Technius/scalajs-mithril)
+
 This is an experimental library that provides facades
 for [Mithril](https://lhorie.github.io/mithril/index.html).
 
