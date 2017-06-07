@@ -21,9 +21,8 @@ before_cache:
 
 install:
   - . $HOME/.nvm/nvm.sh
-  - nvm install stable; nvm use stable
-  - nvm use stable
-  - npm install webpack
+  - nvm install 7 # see scalacenter/scalajs-bundler#130
+  - nvm use 7
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION tests/test
