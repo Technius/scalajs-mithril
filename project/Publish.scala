@@ -4,6 +4,7 @@ import Keys._
 object Publish {
   lazy val settings = Seq(
     publishMavenStyle := true,
+    publishArtifact := true,
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
     publishTo := {
@@ -12,6 +13,22 @@ object Publish {
         Some("snapshots" at nexus + "content/repositories/snapshots") 
       else
         Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    },
+    credentials ++= {
+      if (credentials.value.isEmpty)
+        (for {
+          username <- sys.env.get("SONATYPE_USER")
+          password <- sys.env.get("SONATYPE_PASSWORD")
+        } yield {
+          Credentials(
+            "Sonatype Nexus Repository Manager", 
+            "oss.sonatype.org", 
+            username, 
+            password
+          )
+        }).toSeq
+      else
+        Seq()
     },
     pomExtra := (
       <url>http://github.com/Technius/scalajs-mithril</url>

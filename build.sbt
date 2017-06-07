@@ -13,7 +13,8 @@ lazy val root = (project in file("."))
         "-Yno-adapted-args",
         "-Xlint",
         "-Xfatal-warnings"
-      )
+      ),
+      publishArtifact := false
     ))
   )
   .aggregate(core, scalatagsExt, examples)
