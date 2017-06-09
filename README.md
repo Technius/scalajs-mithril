@@ -19,12 +19,14 @@ is required.
 * [The Basics](#the-basics)
   * [Using the Helpers](#using-the-helpers)
   * [Subclassing Component](#subclassing-component)
+* [Routing](#routing)
 * [Making Web Requests](#making-web-requests)
 * [Scalatags Support](#scalatags-support)
 * [Compiling](#compiling)
 * [License](#license)
 
 ## Setup
+
 Add `scalajs-bundler` to `project/plugins.sbt`:
 ```scala
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.6.0")
@@ -279,6 +281,106 @@ case class MyAttrs(name: String)
 
 object MyComponent extends Component[js.Object, MyAttrs] {
   def view(vnode: RootNode) = m("span", vnode.attrs.name)
+}
+```
+
+## Routing
+
+To use Mithril's routing functionality, use `m.route` as it is defined in mithril:
+
+```scala
+import co.technius.scalajs.mithril._
+import org.scalajs.dom
+import scala.scalajs.js
+
+object MyApp extends js.JSApp {
+  val homeComponent = Component.viewOnly[js.Object] { vnode =>
+    m("div", "This is the home page")
+  }
+
+  val pageComponent = Component.viewOnly[js.Object] { vnode =>
+    m("div", "This is another page")
+  }
+
+  def main(): Unit = {
+    val routes = js.Dictionary[MithrilRoute.Route](
+      "/" -> homeComponent,
+      "/page" -> pageComponent
+    )
+    m.route(dom.document.getElementById("app"), "/", routes)
+  }
+}
+```
+
+For convenience, there is an alias that constructs the routes dictionary
+`m.route` automatically:
+
+```scala
+m.route(dom.document.getElementById("app"), "/", routes)(
+  "/" -> homeComponent,
+  "/page" -> pageComponent
+)
+```
+
+Instead of using a component for a route,
+a [`RouteResolver`](https://mithril.js.org/route.html#routeresolver) may be used
+instead. There are two ways to construct a `RouteResolver`: using a helper
+method or subclassing `RouteResolver`.
+
+`RouteResolver.render` creates a `RouteResolver` that contains a `render`
+function. The helper accepts the `render` function as a parameter:
+
+```scala
+m.route(dom.document.getElementById("app"), "/", routes)(
+  "/" -> RouteResolver.render { vnode =>
+    m("div", js.Array[VNode](
+      m("h1", "Home component"),
+      homeComponent
+    ))
+  },
+  "/page" -> pageComponent
+)
+```
+
+`RouteResolver.onmatch` creates a `RouteResolver` that contains an `onmatch`
+function. The helper accepts the `onmatch` function as a parameter:
+
+```scala
+val accessDeniedComponent = Component.viewOnly[js.Object] { vnode =>
+  m("div", "Incorrect or missing password!")
+}
+
+val secretComponent = Component.viewOnly[js.Object] { vnode =>
+  m("div", "Welcome to the secret page!")
+}
+
+m.route(dom.document.getElementById("app"), "/", routes)(
+  "/secret" -> RouteResolver.onmatch { (params, requestedPath) =>
+    // check if password is correct
+    if (params.get("password").fold(false)(_ == "12345")) {
+      secretComponent
+    } else {
+      accessDeniedComponent
+    }
+  }
+)
+```
+
+If it is required to define both `render` and `onmatch`, subclass
+`RouteResolver`. Note that this library always ensures that `render` is defined,
+but allows `onmatch` to be undefined.
+
+```scala
+val helloComponent = Component.viewOnly[js.Object](_ => m("div", "Hello world!"))
+
+val myRouteResolver = new RouteResolver {
+  override def onmatch = js.defined { (params, requestedPath) =>
+    helloComponent
+  }
+
+  override def render = { vnode =>
+    vnode
+  }
 }
 ```
 

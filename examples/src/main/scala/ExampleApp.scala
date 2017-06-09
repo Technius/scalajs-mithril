@@ -13,17 +13,14 @@ object ExampleApp extends js.JSApp {
         // demo, so a RouteResolver is used to customize how each route is
         // displayed.
         val view = RouteResolver.render { vnode =>
-
           // Create the component using the factory function
           val comp = compF()
-
           // Create the view
           m.fragment(new js.Object, js.Array[VNode](
             m(DemoDropdown.component),
             comp
           ))
         }
-
         // Map each route to the view
         link -> view
       }

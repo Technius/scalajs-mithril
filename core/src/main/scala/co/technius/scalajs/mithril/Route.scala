@@ -28,8 +28,9 @@ trait MithrilRoute extends js.Object {
 }
 
 /**
- * A RouteResolver, as defined in mithril. At least one of the two methods must
- * be defined.
+ * A RouteResolver, as defined in mithril. In this library, render is defined as
+ * the identity function by default to ensure that at least one of `onmatch` and
+ * `render` is defined.
  */
 @ScalaJSDefined
 abstract class RouteResolver extends js.Object {
@@ -37,8 +38,8 @@ abstract class RouteResolver extends js.Object {
   // explicit type annotations for Scala 2.11 support
   // could be implemented in 2.12 using
   //     (_, _) => ()
-  def onmatch: js.Function2[js.Dictionary[js.Any], String, RouteResolver.Resolved] =
-    (_: js.Dictionary[js.Any], _: String) => (): RouteResolver.Resolved
+  def onmatch: js.UndefOr[js.Function2[js.Dictionary[js.Any], String, RouteResolver.Resolved]] =
+    js.undefined
 
   // explicit type annotations for Scala 2.11 support
   // could be implemented in 2.12 using
@@ -65,7 +66,7 @@ object RouteResolver  {
     */
   def onmatch(f: (js.Dictionary[js.Any], String) => Resolved): Route =
     new RouteResolver {
-      override def onmatch = f
+      override def onmatch = js.defined(f)
     }
 }
 
