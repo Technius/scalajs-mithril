@@ -70,3 +70,25 @@ lazy val examples =
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, scalatagsExt)
+
+lazy val benchmarks =
+  Project("benchmarks", file("benchmarks"))
+    .settings(
+      name := """benchmarks""",
+      libraryDependencies ++= Seq(
+        "com.github.japgolly.scalajs-benchmark" %%% "benchmark" % "0.2.4",
+        "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+      ),
+      npmDependencies in Compile ++= Seq(
+        "react" -> "15.5.4",     // needed by scalajs-benchmark
+        "react-dom" -> "15.5.4", // needed by scalajs-benchmark
+        "chart.js" -> "1.0.2",   // needed by scalajs-benchmark
+        "mithril" -> mithrilVersion
+      ),
+      npmDevDependencies in Compile ++= Seq(
+        "expose-loader" -> "0.7.1" // expose scalajs-benchmark dependencies to global
+      ),
+      webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, scalatagsExt)
