@@ -280,7 +280,9 @@ import co.technius.scalajs.mithril._
 case class MyAttrs(name: String)
 
 object MyComponent extends Component[js.Object, MyAttrs] {
-  def view(vnode: RootNode) = m("span", vnode.attrs.name)
+  override val view =  { (vnode: RootNode) =>
+    m("span", vnode.attrs.name)
+  }
 }
 ```
 
@@ -312,8 +314,8 @@ object MyApp extends js.JSApp {
 }
 ```
 
-For convenience, there is an alias that constructs the routes dictionary
-`m.route` automatically:
+For convenience, there is an alias for `m.route` that accepts a vararg list of
+routes instead of a `js.Dictionary`:
 
 ```scala
 m.route(dom.document.getElementById("app"), "/", routes)(
@@ -322,13 +324,12 @@ m.route(dom.document.getElementById("app"), "/", routes)(
 )
 ```
 
-Instead of using a component for a route,
-a [`RouteResolver`](https://mithril.js.org/route.html#routeresolver) may be used
-instead. There are two ways to construct a `RouteResolver`: using a helper
-method or subclassing `RouteResolver`.
+A [`RouteResolver`](https://mithril.js.org/route.html#routeresolver) may be used
+for more complicated routing situations. There are two ways to construct a
+`RouteResolver`: using a helper method or subclassing `RouteResolver`.
 
-`RouteResolver.render` creates a `RouteResolver` that contains a `render`
-function. The helper accepts the `render` function as a parameter:
+`RouteResolver.render` creates a `RouteResolver` with the given `render`
+function.
 
 ```scala
 m.route(dom.document.getElementById("app"), "/", routes)(
@@ -342,8 +343,8 @@ m.route(dom.document.getElementById("app"), "/", routes)(
 )
 ```
 
-`RouteResolver.onmatch` creates a `RouteResolver` that contains an `onmatch`
-function. The helper accepts the `onmatch` function as a parameter:
+Similarly, `RouteResolver.onmatch` creates a `RouteResolver` with the given
+`onmatch` function.
 
 ```scala
 val accessDeniedComponent = Component.viewOnly[js.Object] { vnode =>
@@ -414,7 +415,7 @@ reqPromise.toFuture.foreach { data =>
 }
 ```
 
-By default, Mithril parses the response data into a `js.Object`. It may be
+By default, the response data will be returned as a `js.Object`. It may be
 convenient to define a facade to hold the response data:
 
 ```scala
@@ -440,7 +441,7 @@ There is also support for [Scalatags](http://lihaoyi.com/scalatags), which can
 make it easier to create views. Add the following line to `build.sbt`:
 
 ```scala
-libraryDependencies += "co.technius" %%% "scalajs-mithril" % "0.2.0-SNAPSHOT"
+libraryDependencies += "co.technius" %%% "scalajs-mithril-scalatags" % "0.2.0-SNAPSHOT"
 ```
 
 Then, import `co.technius.scalajs.mithril.VNodeScalatags.all._`. If you already
@@ -490,18 +491,11 @@ example.
 
 ## Compiling
 
-Compile the core project with `core/compile`. Examples can be built locally by
-running `examples/fastOptJS::webpack` and then navigating to
-`examples/src/main/resources/index.html`. To run tests, use `tests/test`.
-
-## TODO
-
-* Add missing functions from Mithril 1.1.1
-* Create documentation
-* ScalaDoc
-* Write more tests
-* Add a component builder
-* GitHub Pages
+* Compile the core project with `core/compile`.
+* Examples can be built locally by running `examples/fastOptJS::webpack` and
+then navigating to `examples/src/main/resources/index.html`.
+* The benchmarks are built in the same manner as the examples. `benchmarks/fastOptJS::webpack`
+* To run tests, use `tests/test`.
 
 ## License
 This library is licensed under the MIT License. See LICENSE for more details.
