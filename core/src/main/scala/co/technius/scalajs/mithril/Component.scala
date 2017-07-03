@@ -5,8 +5,25 @@ import scala.scalajs.js.|
 import scala.scalajs.js.annotation._
 import scala.annotation.meta.field
 
+/**
+  * In Mithril, a component is any object that has a view function.
+  *
+  * Components can be created either by using the helper methods on the
+  * companion object or by subclassing Component.
+  *
+  * @example {{{
+  * val myComponent = Component.viewOnly[js.Object] { vnode =>
+  *   m("div", "Hello world")
+  * }
+  * }}}
+  */
 @ScalaJSDefined
 trait Component[State, Attrs] extends Lifecycle[State, Attrs] {
+
+  /**
+    * The view function, which creates a `VNode` that determines what should be
+    * rendered.
+    */
   def view: js.Function1[RootNode, VNode]
 }
 
