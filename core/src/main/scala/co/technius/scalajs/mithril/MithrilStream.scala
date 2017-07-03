@@ -41,10 +41,21 @@ object MithrilStream extends js.Object {
 }
 
 @js.native
-trait MStream[+T] extends js.Object {
+trait MStream[T] extends js.Object {
 
+  /**
+    * Retuns the current value of this stream.
+    *
+    * Note that this method will return `js.undefined` if the stream is
+    * initially empty. If this stream is initially empty, use
+    * `MStreamOps.toOption` instead of this method.
+    */
   def apply(): T = js.native
-  def apply[U >: T](value: U): U = js.native
+
+  /**
+    * Sets the current value of this stream.
+    */
+  def apply[U <: T](value: U): U = js.native
 
   def end: MStream[Boolean] = js.native
 

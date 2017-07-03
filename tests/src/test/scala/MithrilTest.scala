@@ -29,9 +29,28 @@ class MithrilTest extends FlatSpec with Matchers with TestUtils {
   it should "support streams" in {
     val s = MithrilStream[Int](5)
     s() shouldBe (5)
-    val child = s.map((_: Int) + 5)
+    val child: MStream[Int] = s.map((_: Int) + 5)
     child() shouldBe (10)
     s() = 10
     child() shouldBe(15)
+
+    val nums = MithrilStream[Int](1)
+    val sum = nums.fold(0)(_ + _)
+    sum() shouldBe (1)
+    nums() = 2
+    sum() shouldBe (3)
+    nums() = 3
+    sum() shouldBe (6)
+
+    val emptyStream = MithrilStream[String]()
+    emptyStream.toOption shouldBe (None)
+  }
+
+  it should "ensure stream type signatures are sound" in {
+    """
+    val stream = MithrilStream[String]("foo")
+    val stream2: MStream[Any] = stream
+    stream2() = 5
+    """.stripMargin shouldNot typeCheck
   }
 }
