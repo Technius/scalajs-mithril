@@ -29,7 +29,7 @@ is required.
 
 Add `scalajs-bundler` to `project/plugins.sbt`:
 ```scala
-addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.6.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.7.0")
 ```
 
 Then, add the following lines to `build.sbt`:

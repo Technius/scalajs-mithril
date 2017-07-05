@@ -14,6 +14,12 @@ lazy val root = (project in file("."))
         "-Xlint",
         "-Xfatal-warnings"
       ),
+      scalacOptions ++= {
+        if (scalaJSVersion.startsWith("0.6."))
+          Seq("-P:scalajs:sjsDefinedByDefault")
+        else
+          Nil
+      },
       publishArtifact := false
     ))
   )
@@ -26,8 +32,8 @@ lazy val core =
       name := """scalajs-mithril""",
       version := "0.2.0-SNAPSHOT",
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.1",
-        "org.scalatest" %%% "scalatest" % "3.0.1" % "test"
+        "org.scala-js" %%% "scalajs-dom" % Versions.scalaJsDom,
+        "org.scalatest" %%% "scalatest" % Versions.scalatest % "test"
       )
     )
     .enablePlugins(ScalaJSPlugin)
@@ -39,7 +45,7 @@ lazy val scalatagsExt =
       name := """scalajs-mithril-scalatags""",
       version := "0.2.0-SNAPSHOT",
       libraryDependencies ++= Seq(
-        "com.lihaoyi" %%% "scalatags" % "0.6.5"
+        "com.lihaoyi" %%% "scalatags" % Versions.scalatags
       )
     )
     .enablePlugins(ScalaJSPlugin)
@@ -49,10 +55,9 @@ lazy val tests =
   Project("tests", file("tests"))
     .settings(
       name := "tests",
-      libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.1" % "test",
+      libraryDependencies += "org.scalatest" %%% "scalatest" % Versions.scalatest % "test",
       npmDependencies in Compile += "mithril" -> mithrilVersion,
-      requiresDOM in Test := true,
-      version in installJsdom := "9.12.0" // hack until bundler updates to sjs 0.6.16
+      requiresDOM in Test := true
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, scalatagsExt)
@@ -64,9 +69,10 @@ lazy val examples =
       name := """scalajs-mithril-examples""",
       version := "0.2.0-SNAPSHOT",
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+        "org.scala-js" %%% "scalajs-dom" % Versions.scalaJsDom
       ),
-      npmDependencies in Compile += "mithril" -> mithrilVersion
+      npmDependencies in Compile += "mithril" -> mithrilVersion,
+      scalaJSUseMainModuleInitializer := true
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, scalatagsExt)
@@ -77,7 +83,7 @@ lazy val benchmarks =
       name := """benchmarks""",
       libraryDependencies ++= Seq(
         "com.github.japgolly.scalajs-benchmark" %%% "benchmark" % "0.2.4",
-        "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+        "org.scala-js" %%% "scalajs-dom" % Versions.scalaJsDom
       ),
       npmDependencies in Compile ++= Seq(
         "react" -> "15.5.4",     // needed by scalajs-benchmark

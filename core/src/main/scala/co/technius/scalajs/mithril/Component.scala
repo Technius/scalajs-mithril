@@ -17,7 +17,6 @@ import scala.annotation.meta.field
   * }
   * }}}
   */
-@ScalaJSDefined
 trait Component[State, Attrs] extends Lifecycle[State, Attrs] {
 
   /**
@@ -37,7 +36,6 @@ trait Component[State, Attrs] extends Lifecycle[State, Attrs] {
   * }
   * }}}
   */
-@ScalaJSDefined
 trait Lifecycle[State, Attrs] extends js.Object {
 
   /**

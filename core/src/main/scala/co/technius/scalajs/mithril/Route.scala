@@ -3,7 +3,6 @@ package co.technius.scalajs.mithril
 import org.scalajs.dom
 import scala.scalajs.js
 import scala.scalajs.js.|
-import scala.scalajs.js.annotation.ScalaJSDefined
 
 import MithrilRoute.Route
 
@@ -32,7 +31,6 @@ trait MithrilRoute extends js.Object {
  * the identity function by default to ensure that at least one of `onmatch` and
  * `render` is defined.
  */
-@ScalaJSDefined
 abstract class RouteResolver extends js.Object {
 
   // explicit type annotations for Scala 2.11 support

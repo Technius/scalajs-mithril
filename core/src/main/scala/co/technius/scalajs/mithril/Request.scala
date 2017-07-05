@@ -3,9 +3,7 @@ package co.technius.scalajs.mithril
 import org.scalajs.dom.XMLHttpRequest
 import scala.concurrent.Future
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{ JSExportAll, ScalaJSDefined }
 
-@ScalaJSDefined
 class XHROptions[T](
   var url: String,
   var method: js.UndefOr[String] = js.undefined,

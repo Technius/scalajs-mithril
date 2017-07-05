@@ -4,8 +4,8 @@ import org.scalajs.dom
 
 import co.technius.scalajs.mithril._
 
-object ExampleApp extends js.JSApp {
-  def main(): Unit = {
+object ExampleApp {
+  def main(args: Array[String]): Unit = {
     // Build routes based on demo choices
     val routes =
       DemoDropdown.choices map { case (_, link, compF) =>
